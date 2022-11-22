@@ -9,7 +9,7 @@ namespace Modules.UIScreen
     {
         // Properties -----------------------------------
 
-        [field: SerializeField] public bool IsShow { get; private set; } = false;
+        [field: SerializeField] public bool IsShow { get; private set; } = true;
         [field: SerializeField] public string Name { get; private set; } = "Screen";
 
         // Fields ---------------------------------------
@@ -22,7 +22,7 @@ namespace Modules.UIScreen
         /// Show the screen
         /// </summary>
         /// <param name="freeze">Should the screen freeze the game?</param>
-        public virtual Tween Show(bool freeze = false)
+        public virtual Tween Show(bool freeze = false, float duration = 0.5F)
         {
             if (IsShow) return default;
             IsShow = true;
@@ -34,14 +34,15 @@ namespace Modules.UIScreen
             gameObject.SetActive(true);
 
             // Fade in
-            return m_CanvasGroup.DOFade(1, 0.5f).OnComplete(() => SetCanvasInteractable(true));
+            _ = DOTween.Kill(m_CanvasGroup);
+            return m_CanvasGroup.DOFade(1, duration).OnComplete(() => SetCanvasInteractable(true)).SetUpdate(true);
         }
 
         /// <summary>
         /// Hide the screen
         /// </summary>
         /// <param name="unfreeze">Should unfreeze the game?</param>
-        public virtual Tween Hide(bool unfreeze = false)
+        public virtual Tween Hide(bool unfreeze = false, float duration = 0.5F)
         {
             if (!IsShow) return default;
             IsShow = false;
@@ -53,7 +54,8 @@ namespace Modules.UIScreen
             SetCanvasInteractable(false);
 
             // Fade out
-            return m_CanvasGroup.DOFade(0, 0.5f).OnComplete(() => gameObject.SetActive(false));
+            _ = DOTween.Kill(m_CanvasGroup);
+            return m_CanvasGroup.DOFade(0, duration).OnComplete(() => gameObject.SetActive(false)).SetUpdate(true);
         }
 
         // Unity Methods ----------------------------------------------------------------------------------------------
