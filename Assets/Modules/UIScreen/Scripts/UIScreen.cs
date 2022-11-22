@@ -58,7 +58,7 @@ namespace Modules.UIScreen
 
         // Unity Methods ----------------------------------------------------------------------------------------------
 
-        private void OnValidate()
+        protected virtual void OnValidate()
         {
             m_CanvasGroup ??= GetComponentInChildren<CanvasGroup>();
 
