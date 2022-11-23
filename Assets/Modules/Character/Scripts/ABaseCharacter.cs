@@ -17,12 +17,14 @@ namespace Modules.Character
         /// <summary>
         /// Determines if the character is dead.
         /// </summary>
-        private bool bIsDead => Health < 1;
+        protected bool bIsDead => Health < 1;
 
         // Public Methods --------------------------------------
 
         public virtual void SetData(SOCharacterData data)
         {
+            if (data == default) return;
+
             CharacterData = data;
 
             Health = data.MaxHealth;
@@ -49,13 +51,13 @@ namespace Modules.Character
         /// Moves the character
         /// </summary>
         /// <param name="direction"></param>
-        public abstract void Move(Vector3 direction);
+        public abstract void Move(Vector2 direction);
 
         /// <summary>
         /// Rotates the character
         /// </summary>
         /// <param name="direction"></param>
-        public abstract void Rotate(Vector3 direction);
+        public abstract void Rotate(Vector2 direction);
 
         // Unity Methods --------------------------------------
 
@@ -81,6 +83,8 @@ namespace Modules.Character
         /// </summary>
         protected virtual void HandleSkin()
         {
+            if (CharacterData == default) return;
+
             // Spawn the character body
             var body = Instantiate(CharacterData.Body, transform);
             body.transform.localPosition = Vector3.zero;
