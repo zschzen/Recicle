@@ -59,7 +59,7 @@ namespace Modules.Character
 
         // Unity Methods --------------------------------------
 
-        private void Awake()
+        protected virtual void Awake()
         {
             SetData(CharacterData);
 
