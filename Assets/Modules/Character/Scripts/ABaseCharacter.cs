@@ -11,6 +11,8 @@ namespace Modules.Character
 
         // Fields ----------------------------------
 
+        public float SpeedPerFrame => Speed * Time.deltaTime;
+
         protected int MaxHealth => CharacterData.MaxHealth;
         protected float MaxSpeed => CharacterData.MaxSpeed;
 
