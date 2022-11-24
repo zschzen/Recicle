@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ec6afcc5e164c49b242ef78d97d4500, type: 3}
+  m_Name: Enemy Data
+  m_EditorClassIdentifier: 
+  <Health>k__BackingField: 100
+  <Type>k__BackingField: 2
+  <MaxHealth>k__BackingField: 100
+  <Speed>k__BackingField: 0.05
+  <MaxSpeed>k__BackingField: 10
+  <Damage>k__BackingField: 0
+  <InteractionRange>k__BackingField: 10
+  <Body>k__BackingField: {fileID: 5334339924719463549, guid: bf34f0ff673a55e4ebd980183cbf1a3b,
+    type: 3}
+  <AttackRange>k__BackingField: 1
