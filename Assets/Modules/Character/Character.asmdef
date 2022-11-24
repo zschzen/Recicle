@@ -1,3 +1,4 @@
 ﻿{
-  "name": "Character"
+  "name": "Character",
+  "references":[ "GUID:49d791ecdbf641f8878954fb5d9e48b9" ]
 }
