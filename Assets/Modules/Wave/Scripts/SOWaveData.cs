@@ -6,8 +6,9 @@ namespace Modules.Wave
     public class SOWaveData : ScriptableObject
     {
         [field: SerializeField] public int WaveNumber { get; private set; }
+        [field: SerializeField] public int TotalWaveCount { get; private set; }
         [field: SerializeField] public int EnemyCount { get; private set; }
-        [field: SerializeField] public float SpawnRate { get; private set; }
-        [field: SerializeField] public float SpawnDelay { get; private set; }
+
+        [field: SerializeField] public float WaveDelay { get; private set; }
     }
 }
