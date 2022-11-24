@@ -117,8 +117,8 @@ namespace Modules.Enemy
         private void PursueTarget(Transform target)
         {
             var direction = target.position - transform.position;
-            direction.y = 0;
-            direction.Normalize();
+            direction.y = direction.z;
+            //direction.Normalize();
 
             Move(direction);
             Rotate(direction);
