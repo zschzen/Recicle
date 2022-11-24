@@ -16,13 +16,24 @@ namespace Modules.Player
         {
         }
 
+        /// <summary>
+        /// Implementation used to only rotate the cannon.
+        /// </summary>
+        /// <param name="direction"></param>
         public override void Move(Vector2 direction)
         {
             // Only continues if direction is not zero
             if (direction.Equals(default)) return;
 
-            direction.y = 0;
-            m_cannonController.Move(direction * SpeedPerFrame);
+            // Get angle from direction
+            // Clamp the angle to 0-180 degrees
+            var angle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
+            angle = Mathf.Clamp(angle, -90, 90);
+
+            // Smoothly rotates the cannon to avoid jerky movements or instant rotations
+            m_cannonController.transform.localRotation =
+                Quaternion.Slerp(m_cannonController.transform.localRotation,
+                    Quaternion.Euler(0, angle, 0), Time.deltaTime * 1.5F);
         }
 
         /// <summary>
