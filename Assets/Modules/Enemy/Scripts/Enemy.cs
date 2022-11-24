@@ -1,4 +1,5 @@
 ﻿using System;
+using Enums;
 using Modules.BucketUpdate.Script;
 using Modules.Character;
 using UnityEngine;
@@ -19,8 +20,13 @@ namespace Modules.Enemy
             Attack
         }
 
+        // Properties ----------------------------------------------------------
+
+        public event Action OnRelease;
+
         // Fields ---------------------------------------------------------------------------
 
+        public DiscardTypes Type;
         [SerializeField] private CharacterController m_characterController;
 
         private State CurrentState;
@@ -99,7 +105,11 @@ namespace Modules.Enemy
 
         private void OnDisable()
         {
+            // Deregister slice update
             UpdateManager.Instance.DeregisterLateUpdate(this);
+
+            // Release the enemy
+            OnRelease?.Invoke();
         }
 
         // Private Methods ------------------------------------------------------------------
