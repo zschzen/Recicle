@@ -1,15 +1,16 @@
-﻿using UnityEngine;
+﻿using Enums;
+using UnityEngine;
 
 namespace Modules.Character
 {
-    public abstract class ABaseCharacter : MonoBehaviour
+    public abstract class ABaseCharacter<T> : MonoBehaviour where T : SOCharacterData
     {
         // Properties ------------------------------
-        [field: SerializeField] public SOCharacterData CharacterData { get; protected set; }
+        [field: SerializeField] public T CharacterData { get; protected set; }
         [field: SerializeField] public int Health { get; protected set; }
         [field: SerializeField] public float Speed { get; protected set; }
 
-        // Fields ----------------------------------
+        // Fields -----------------------------------
 
         public float SpeedPerFrame => Speed * Time.deltaTime;
 
@@ -23,7 +24,7 @@ namespace Modules.Character
 
         // Public Methods --------------------------------------
 
-        public virtual void SetData(SOCharacterData data)
+        public virtual void SetData(T data)
         {
             if (data == default) return;
 
@@ -34,11 +35,25 @@ namespace Modules.Character
         }
 
         /// <summary>
+        /// Performs the attack action.
+        /// </summary>
+        public abstract void Attack();
+
+        /// <summary>
         /// Inflict damage to the character
         /// </summary>
-        /// <param name="damage"></param>
-        public virtual void TakeDamage(int damage)
+        /// <param name="damage">Damage to inflict</param>
+        /// <param name="type">Type of damage</param>
+        public virtual void TakeDamage(int damage, DiscardTypes type)
         {
+            // Organic only takes damage from recyclable and vice versa
+            switch (type)
+            {
+                case DiscardTypes.Organic when CharacterData.Type.HasFlag(DiscardTypes.Organic):
+                case DiscardTypes.Recyclable when CharacterData.Type.HasFlag(DiscardTypes.Recyclable):
+                    return;
+            }
+
             if (bIsDead) return;
 
             // Apply damage
@@ -85,6 +100,7 @@ namespace Modules.Character
         /// </summary>
         protected virtual void HandleSkin()
         {
+            return;
             if (CharacterData == default) return;
 
             // Spawn the character body
