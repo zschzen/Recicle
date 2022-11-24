@@ -1,8 +1,9 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Text;
 using UnityEngine;
 using Modules.Character;
+using UnityEngine.AddressableAssets;
 using UnityEngine.InputSystem;
+using UnityEngine.Pool;
 
 namespace Modules.Player
 {
@@ -14,8 +15,22 @@ namespace Modules.Player
         [SerializeField] private CharacterController m_cannonController;
         [SerializeField] private CharacterController m_bodyController;
 
+        private Projectile.Projectile m_projecRef;
+        private IObjectPool<Projectile.Projectile> m_projectilePool;
+
         public override void Attack()
         {
+            // Get projectile from pool
+            var projectile = m_projectilePool.Get();
+
+            // Set projectile position and rotation
+            var trans = m_cannonController.transform;
+            projectile.transform.position = (trans.forward * 2F) + trans.position;
+
+            // Set projectile forwad to cannon forward
+            projectile.Launch(trans.forward);
+
+            projectile.gameObject.SetActive(true);
         }
 
         /// <summary>
@@ -65,6 +80,18 @@ namespace Modules.Player
 
         // Unity Methods -----------------------------------------------------------------------------------------------
 
+        protected override void Awake()
+        {
+            // Get the projectile reference
+            m_projecRef = Addressables.LoadAssetAsync<GameObject>("Projectile")
+                .WaitForCompletion()
+                .GetComponent<Projectile.Projectile>();
+
+            // Create a pool of projectiles
+            m_projectilePool = new ObjectPool<Projectile.Projectile>(
+                CreatePooleableProjectile, OnTakeFromPool, OnReturnedToPool, OnDestroyPoolObject, false, 10, 10);
+        }
+
         private void OnEnable()
         {
             // Ensure that the player input action map is set to the player
@@ -104,10 +131,13 @@ namespace Modules.Player
         }
 
 #if UNITY_EDITOR
+        private static readonly StringBuilder s_sb = new();
+
         private void OnDrawGizmos()
         {
-            var cannonPos = m_cannonController.transform.position;
-            var cannonForward = m_cannonController.transform.forward;
+            var canonTrans = m_cannonController.transform;
+            var cannonPos = canonTrans.position;
+            var cannonForward = canonTrans.forward;
 
             // Draw the cannon
             Gizmos.color = Color.red;
@@ -130,13 +160,54 @@ namespace Modules.Player
             var angle = Mathf.Atan2(cannonForward.x, cannonForward.z) * Mathf.Rad2Deg;
             //angle = Mathf.Clamp(angle, -90, 90);
 
+            s_sb.Clear()
+                .Append($"{angle:0}°");
+
             // draw handles label angle on the middle of the arc
             UnityEditor.Handles.Label(cannonPos + Quaternion.Euler(0, angle, 0) * Vector3.forward * 2.5F,
-                $"{angle:0}°");
+                s_sb.ToString());
+        }
+
+        void OnGUI()
+        {
+            s_sb.Clear()
+                .Append($"Pool Size: {m_projectilePool.CountInactive}");
+
+            GUILayout.Label(s_sb.ToString());
         }
 #endif
 
         // Private Methods ----------------------------------------------------------------------------------------------
+
+        private Projectile.Projectile CreatePooleableProjectile()
+        {
+            // Clone the projectile prefab
+            var projectile = Instantiate(m_projecRef);
+
+            // Set the projectile release method
+            projectile.OnRelease += () => m_projectilePool.Release(projectile);
+
+            // Return the projectile
+            return projectile;
+        }
+
+        private void OnReturnedToPool(Projectile.Projectile projectile)
+        {
+            // Set the projectile to inactive
+            projectile.gameObject.SetActive(false);
+        }
+
+        private void OnDestroyPoolObject(Projectile.Projectile projectile)
+        {
+            // Destroy the projectile
+            Destroy(projectile.gameObject);
+        }
+
+        private void OnTakeFromPool(Projectile.Projectile projectile)
+        {
+            // Set the projectile to active
+            projectile.gameObject.SetActive(true);
+        }
 
         /// <summary>
         /// Fires a projectile
@@ -148,8 +219,7 @@ namespace Modules.Player
             if (bIsDead) return;
             //if (callback.interaction is not TapInteraction) return;
 
-            // TODO: Fire
-            Debug.Log("Fire");
+            Attack();
         }
 
         /// <summary>
