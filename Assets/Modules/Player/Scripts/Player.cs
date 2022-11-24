@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Globalization;
+using UnityEngine;
 using Modules.Character;
 using UnityEngine.InputSystem;
 
@@ -100,6 +102,39 @@ namespace Modules.Player
             // Get rotate value and do rotate
             Rotate(m_playerInput.actions["Look"].ReadValue<Vector2>());
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            var cannonPos = m_cannonController.transform.position;
+            var cannonForward = m_cannonController.transform.forward;
+
+            // Draw the cannon
+            Gizmos.color = Color.red;
+            Gizmos.DrawRay(cannonPos, cannonForward * 5);
+
+            // Draw cannon rotation arc limits
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawRay(cannonPos, Quaternion.Euler(0, -90, 0) * Vector3.forward * 5);
+            Gizmos.DrawRay(cannonPos, Quaternion.Euler(0, 90, 0) * Vector3.forward * 5);
+
+            // draw arc, connecting the previous ray to the next one
+            for (var i = 0; i < 180; i++)
+            {
+                Gizmos.DrawLine(
+                    Quaternion.Euler(0, -90 + i, 0) * Vector3.forward * 5 + cannonPos,
+                    Quaternion.Euler(0, -90 + i + 1, 0) * Vector3.forward * 5 + cannonPos);
+            }
+
+            // Handles text to display the current angle of the cannon
+            var angle = Mathf.Atan2(cannonForward.x, cannonForward.z) * Mathf.Rad2Deg;
+            //angle = Mathf.Clamp(angle, -90, 90);
+
+            // draw handles label angle on the middle of the arc
+            UnityEditor.Handles.Label(cannonPos + Quaternion.Euler(0, angle, 0) * Vector3.forward * 2.5F,
+                $"{angle:0}°");
+        }
+#endif
 
         // Private Methods ----------------------------------------------------------------------------------------------
 
