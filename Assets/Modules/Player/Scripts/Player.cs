@@ -5,12 +5,16 @@ using UnityEngine.InputSystem;
 namespace Modules.Player
 {
     [RequireComponent(typeof(PlayerInput))]
-    public class Player : ABaseCharacter
+    public class Player : ABaseCharacter<SOCharacterData>
     {
         [SerializeField] private PlayerInput m_playerInput;
 
         [SerializeField] private CharacterController m_cannonController;
         [SerializeField] private CharacterController m_bodyController;
+
+        public override void Attack()
+        {
+        }
 
         public override void Move(Vector2 direction)
         {

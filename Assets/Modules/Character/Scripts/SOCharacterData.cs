@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Enums;
+using UnityEngine;
 
 namespace Modules.Character
 {
@@ -9,10 +10,16 @@ namespace Modules.Character
         [field: SerializeField]
         public int Health { get; private set; } = 100;
 
+        [field: SerializeField] public DiscardTypes Type { get; private set; }
+
         [field: SerializeField] public int MaxHealth { get; private set; } = 100;
 
         [field: SerializeField] public float Speed { get; private set; } = 5f;
         [field: SerializeField] public float MaxSpeed { get; private set; } = 10f;
+
+        [field: SerializeField] public int Damage { get; private set; }
+
+        [field: SerializeField] public float InteractionRange { get; private set; } = 1f;
 
         [field: Header("Visuals")]
         [field: SerializeField]
