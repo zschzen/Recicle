@@ -38,6 +38,26 @@ namespace Modules.Enemy
 
         // Public methods -------------------------------------------------------------------
 
+        public override void TakeDamage(int damage, DiscardTypes type)
+        {
+            // Organic only takes damage from recyclable and vice versa
+            switch (type)
+            {
+                case DiscardTypes.Organic when CharacterData.Type.HasFlag(DiscardTypes.Organic):
+                case DiscardTypes.Recyclable when CharacterData.Type.HasFlag(DiscardTypes.Recyclable):
+                    return;
+            }
+
+            if (bIsDead) return;
+
+            // Apply damage
+            CharacterData.Health.value -= damage;
+
+            // Check death
+            if (!bIsDead) return;
+            OnDeath();
+        }
+
         public override void Move(Vector2 direction)
         {
             if (direction.Equals(default)) return;
@@ -142,6 +162,23 @@ namespace Modules.Enemy
             // Release the enemy
             OnRelease?.Invoke();
         }
+
+#if UNITY_EDITOR
+        private static readonly System.Text.StringBuilder s_stringBuilder = new();
+
+        private void OnDrawGizmos()
+        {
+            s_stringBuilder.Clear();
+            s_stringBuilder.Append("Health: ").AppendLine(CharacterData.Health.value.ToString());
+            s_stringBuilder.Append("State: ").AppendLine(CurrentState.ToString());
+            s_stringBuilder.Append("Type: ").AppendLine(Type.ToString());
+            s_stringBuilder.Append("IsDead: ").AppendLine(bIsDead.ToString());
+            
+            // set handle color
+            UnityEditor.Handles.color = Color.black;
+            UnityEditor.Handles.Label(transform.position + Vector3.up * 2.75F, s_stringBuilder.ToString());
+        }
+#endif
 
         // Private Methods ------------------------------------------------------------------
 
