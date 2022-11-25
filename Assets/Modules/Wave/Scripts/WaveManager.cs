@@ -26,7 +26,7 @@ namespace Modules.Wave
 
             // Create pool
             m_enemyPool = new ObjectPool<Enemy.Enemy>(
-                CreatePooleableProjectile, OnTakeFromPool,
+                CreatePooleableEnemy, OnTakeFromPool,
                 OnReturnedToPool, OnDestroyPoolObject,
                 false, 10, 10
             );
@@ -39,7 +39,7 @@ namespace Modules.Wave
 
         // Private Methods ------------------------------------------------------
 
-        private Enemy.Enemy CreatePooleableProjectile()
+        private Enemy.Enemy CreatePooleableEnemy()
         {
             // Clone the enemy prefab
             var enemy = Instantiate(m_enemyRef);
