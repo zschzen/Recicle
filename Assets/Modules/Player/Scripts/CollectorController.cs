@@ -11,6 +11,7 @@ namespace Modules.Player
         [SerializeField] private CharacterController m_characterController;
 
         private RaycastHit[] m_hits = new RaycastHit[1];
+        private Collectable.Collectable m_collectable;
 
         public override void Attack()
         {
@@ -59,29 +60,57 @@ namespace Modules.Player
         {
             // Only continues if its dead or a simple tap
             if (bIsDead) return;
-            //if (callback.interaction is not TapInteraction) return;
 
-            // do a non alloc sphere cast to check if there is an item in range
+            // Tries to collect an item or dispose
+            if (!m_collectable) TryAttachItem();
+            else TryDisposeToContainer();
+        }
+
+        private bool TrySphereCast(out RaycastHit hit)
+        {
+            // Cast a sphere to check if there is an item in range
             var hits = Physics.SphereCastNonAlloc(
-                transform.position,
-                CharacterData.InteractionRange,
-                transform.forward,
-                m_hits,
-                5,
-                ~0 // TODO: Add layer mask
-            );
+                transform.position, CharacterData.InteractionRange,
+                Vector3.up, m_hits, 5,
+                ~0);
+            if (hits > 0)
+            {
+                hit = m_hits[0];
+                return true;
+            }
 
-            // If there is a hit
-            if (hits < 1) return;
+            hit = default;
+            return false;
+        }
 
-            // Get the first hit
-            var hit = m_hits[0];
+        private void TryAttachItem()
+        {
+            if (!TrySphereCast(out var hit)) return;
 
             // If the hit has an item component
             if (!hit.collider.TryGetComponent(out Collectable.Collectable item)) return;
 
+            m_collectable = item;
+
             // attach the item to the transform
             item.transform.SetParent(transform, true);
+        }
+
+        private void TryDisposeToContainer()
+        {
+            if (!TrySphereCast(out var hit)) return;
+
+            // If the hit has an Container component
+            if (!hit.collider.TryGetComponent(out Container container)) return;
+
+            // check if container type accepts the item
+            if (!container.Type.HasFlag(m_collectable.Type)) return;
+
+            // Dispose the item to the container
+            container.Dispose(m_collectable);
+            
+            // Destroy the item
+            Destroy(m_collectable.gameObject);
         }
     }
 }

@@ -30,10 +30,6 @@ namespace Modules.Player
             // Take ammo
             var ammo = GetAmmoCount();
 
-            Debug.Log($"Ammo: {ammo}");
-
-            Debug.Log($"{m_projectilePool.CountInactive}");
-
             for (int i = 0; i < ammo; i++)
             {
                 _ = DOVirtual.DelayedCall(i * 0.125F, () =>
@@ -70,12 +66,6 @@ namespace Modules.Player
         }
 
         // Unity Methods -----------------------------------------------------
-
-        private void Update()
-        {
-            if (m_projectilePool != default)
-                Debug.Log($"{m_projectilePool.CountInactive}");
-        }
 
         protected override void Awake()
         {

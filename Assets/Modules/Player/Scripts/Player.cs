@@ -54,6 +54,11 @@ namespace Modules.Player
             m_cannonController.GetAmmoCount = () => m_ammo[m_currentAmmoType].Dequeue();
             m_cannonController.GetAmmoType = () => m_currentAmmoType;
             m_cannonController.bHasAmmo = bHasAmmo;
+
+            // Setup containers
+            var containers = GetComponentsInChildren<Container>();
+            foreach (var container in containers)
+                container.OnDiscard += AddAmmo;
         }
 
         private void OnEnable()
@@ -104,5 +109,7 @@ namespace Modules.Player
             // Check if ammo is not empty or if not with value of zero
             return ammo.Any() && ammo.Peek() > 0;
         }
+
+        private void AddAmmo(DiscardTypes type, int count) => m_ammo[type].Enqueue(count);
     }
 }
