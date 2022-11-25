@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections;
+using DG.Tweening;
+using Enums;
+using Modules.UIScreen;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Pool;
@@ -12,32 +16,101 @@ namespace Modules.Wave
         [SerializeField] private SOWaveData m_waveData;
         [SerializeField] private Transform[] m_spawnPoints;
 
-        private int m_currentWaveIndex;
+        private ValueNotify<int> m_currentWaveIndex = new(0);
 
         private Enemy.Enemy m_enemyRef;
         private IObjectPool<Enemy.Enemy> m_enemyPool;
+
+        private Coroutine m_waveCoroutine;
+
+        // Public Methods -------------------------------------------------------
+
+        public void StartWave()
+        {
+            if (m_waveCoroutine != null) StopCoroutine(m_waveCoroutine);
+
+            m_currentWaveIndex.value = 0;
+            m_waveCoroutine = StartCoroutine(WaveRoutine());
+        }
 
         // Unity Methods --------------------------------------------------------
 
         private void Awake()
         {
             // Get enemy prefab from addressables
-            m_enemyRef = Addressables.LoadAssetAsync<Enemy.Enemy>("Enemy").WaitForCompletion();
+            m_enemyRef = Addressables.LoadAssetAsync<GameObject>("Enemy")
+                .WaitForCompletion()
+                .GetComponent<Enemy.Enemy>();
 
             // Create pool
             m_enemyPool = new ObjectPool<Enemy.Enemy>(
                 CreatePooleableEnemy, OnTakeFromPool,
                 OnReturnedToPool, OnDestroyPoolObject,
-                false, 10, 10
+                false, 30, 30
             );
         }
 
         private void Start()
         {
-            m_currentWaveIndex = 0;
+            m_currentWaveIndex.value = 0;
+
+            // Start wave
+            StartWave();
         }
 
         // Private Methods ------------------------------------------------------
+
+        /// <summary>
+        /// Get random spawn point position
+        /// </summary>
+        /// <returns></returns>
+        private Vector3 GetRandomSpawnPoint() => m_spawnPoints[Random.Range(0, m_spawnPoints.Length)].position;
+
+        /// <summary>
+        /// Get random value that its not None or Recycable or NonRecycable
+        /// </summary>
+        /// <returns>Random <see cref="DiscardTypes"/></returns>
+        private DiscardTypes GetRandomDiscardType()
+        {
+            var randomValue = Random.Range(1, 3);
+            return (DiscardTypes)randomValue;
+        }
+
+        /// <summary>
+        /// Keep spawning enemies between delays
+        /// TODO: A nice addition would be to display the remaining enemies in the wave or even the remaining time to the next wave
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator WaveRoutine()
+        {
+            var spawnDelay = new WaitForSeconds(m_waveData.SpawnDelay);
+            var waveDelay = new WaitForSeconds(m_waveData.WaveDelay);
+
+            do
+            {
+                // For each enemy count in single wave
+                for (int i = 0; i < m_waveData.EnemyCount; i++)
+                {
+                    // Do spawn enemy
+                    SpawnEnemy();
+
+                    // Wait between spawns
+                    yield return spawnDelay;
+                }
+
+                // Wait between waves
+                yield return waveDelay;
+
+                // Increase wave index while it's less than wave count
+            } while (++m_currentWaveIndex.value < m_waveData.WaveCount);
+        }
+
+        // Spawn enemy at random spawn point
+        private void SpawnEnemy()
+        {
+            var enemy = m_enemyPool.Get();
+            enemy.transform.position = GetRandomSpawnPoint();
+        }
 
         private Enemy.Enemy CreatePooleableEnemy()
         {
@@ -51,39 +124,22 @@ namespace Modules.Wave
             return enemy;
         }
 
-        private void OnReturnedToPool(Enemy.Enemy projectile)
+        private void OnReturnedToPool(Enemy.Enemy enemy)
         {
             // Set the projectile to inactive
-            projectile.gameObject.SetActive(false);
+            enemy.gameObject.SetActive(false);
         }
 
-        private void OnDestroyPoolObject(Enemy.Enemy projectile)
+        private void OnDestroyPoolObject(Enemy.Enemy enemy)
         {
             // Destroy the projectile
-            Destroy(projectile.gameObject);
+            Destroy(enemy.gameObject);
         }
 
-        private void OnTakeFromPool(Enemy.Enemy projectile)
+        private void OnTakeFromPool(Enemy.Enemy enemy)
         {
             // Set the projectile to active
-            projectile.gameObject.SetActive(true);
-        }
-
-        private Transform GetRandomSpawnPoint() => m_spawnPoints[Random.Range(0, m_spawnPoints.Length)];
-
-        private void SpawnWave()
-        {
-            if (m_currentWaveIndex >= m_waveData.TotalWaveCount)
-            {
-                Debug.Log("No more waves");
-                return;
-            }
-
-            for (int i = 0; i < m_waveData.EnemyCount; i++)
-            {
-                var spawnPoint = m_spawnPoints[Random.Range(0, m_spawnPoints.Length)];
-                //Instantiate(m_waveData.EnemyPrefab, spawnPoint.position, Quaternion.identity);
-            }
+            enemy.gameObject.SetActive(true);
         }
     }
 }
