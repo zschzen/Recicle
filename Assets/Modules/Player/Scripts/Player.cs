@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Enums;
-using UnityEngine;
+﻿using UnityEngine;
 using Modules.Character;
 using UnityEngine.InputSystem;
 
@@ -15,14 +12,7 @@ namespace Modules.Player
         [SerializeField] private CannonController m_cannonController;
         [SerializeField] private CollectorController m_bodyController;
 
-        private DiscardTypes m_currentAmmoType = DiscardTypes.Recyclable;
-
-        private Dictionary<DiscardTypes, Queue<int>> m_ammo =
-            new()
-            {
-                { DiscardTypes.Recyclable, new Queue<int>() },
-                { DiscardTypes.Organic, new Queue<int>() }
-            };
+        private Ammo m_ammo = new();
 
         public override void Attack()
         {
@@ -51,14 +41,14 @@ namespace Modules.Player
             base.Awake();
 
             // Setup cannon
-            m_cannonController.GetAmmoCount = () => m_ammo[m_currentAmmoType].Dequeue();
-            m_cannonController.GetAmmoType = () => m_currentAmmoType;
-            m_cannonController.bHasAmmo = bHasAmmo;
+            m_cannonController.GetAmmoCount = m_ammo.RetrieveAmmoCount;
+            m_cannonController.GetAmmoType = m_ammo.GetCurrentAmmoType;
+            m_cannonController.bHasAmmo = m_ammo.HasAmmo;
 
             // Setup containers
             var containers = GetComponentsInChildren<Container>();
             foreach (var container in containers)
-                container.OnDiscard += AddAmmo;
+                container.OnDiscard += m_ammo.AddAmmo;
         }
 
         private void OnEnable()
@@ -99,17 +89,5 @@ namespace Modules.Player
             // Get rotate value and do rotate
             Rotate(m_playerInput.actions["Look"].ReadValue<Vector2>());
         }
-
-        // Private Methods ----------------------------------------------------------------------------------------------
-
-        private bool bHasAmmo()
-        {
-            var ammo = m_ammo[m_currentAmmoType];
-
-            // Check if ammo is not empty or if not with value of zero
-            return ammo.Any() && ammo.Peek() > 0;
-        }
-
-        private void AddAmmo(DiscardTypes type, int count) => m_ammo[type].Enqueue(count);
     }
 }

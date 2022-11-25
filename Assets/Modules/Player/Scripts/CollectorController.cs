@@ -83,6 +83,9 @@ namespace Modules.Player
             return false;
         }
 
+        /// <summary>
+        /// Tries to find and attach an item to the collector body.
+        /// </summary>
         private void TryAttachItem()
         {
             if (!TrySphereCast(out var hit)) return;
@@ -96,6 +99,9 @@ namespace Modules.Player
             item.transform.SetParent(transform, true);
         }
 
+        /// <summary>
+        /// Tries to find a container to dispose the item.
+        /// </summary>
         private void TryDisposeToContainer()
         {
             if (!TrySphereCast(out var hit)) return;
@@ -108,7 +114,7 @@ namespace Modules.Player
 
             // Dispose the item to the container
             container.Dispose(m_collectable);
-            
+
             // Destroy the item
             Destroy(m_collectable.gameObject);
         }
