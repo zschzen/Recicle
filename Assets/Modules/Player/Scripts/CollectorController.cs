@@ -66,21 +66,23 @@ namespace Modules.Player
             else TryDisposeToContainer();
         }
 
-        private bool TrySphereCast(out RaycastHit hit)
+        private bool TrySphereCast(LayerMask layerMask, out RaycastHit hit)
         {
-            // Cast a sphere to check if there is an item in range
-            var hits = Physics.SphereCastNonAlloc(
-                transform.position, CharacterData.InteractionRange,
-                Vector3.up, m_hits, 5,
-                ~0);
-            if (hits > 0)
+            // Tries to cast a sphere to the direction
+            var hits = Physics.SphereCastNonAlloc(transform.position,
+                CharacterData.InteractionRange, transform.forward,
+                m_hits, 0, layerMask);
+
+            // Only continues if there is a hit
+            if (hits == 0)
             {
-                hit = m_hits[0];
-                return true;
+                hit = default;
+                return false;
             }
 
-            hit = default;
-            return false;
+            // Returns the first hit
+            hit = m_hits[0];
+            return true;
         }
 
         /// <summary>
@@ -88,7 +90,7 @@ namespace Modules.Player
         /// </summary>
         private void TryAttachItem()
         {
-            if (!TrySphereCast(out var hit)) return;
+            if (!TrySphereCast(LayerMask.GetMask("Collectable"), out var hit)) return;
 
             // If the hit has an item component
             if (!hit.collider.TryGetComponent(out Collectable.Collectable item)) return;
@@ -104,7 +106,7 @@ namespace Modules.Player
         /// </summary>
         private void TryDisposeToContainer()
         {
-            if (!TrySphereCast(out var hit)) return;
+            if (!TrySphereCast(LayerMask.GetMask("Container"), out var hit)) return;
 
             // If the hit has an Container component
             if (!hit.collider.TryGetComponent(out Container container)) return;
