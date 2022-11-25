@@ -9,16 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ec6afcc5e164c49b242ef78d97d4500, type: 3}
-  m_Name: Enemy Data
+  m_Script: {fileID: 11500000, guid: cda42a1be4204e41baa0fc2f3ff0c096, type: 3}
+  m_Name: Player Data
   m_EditorClassIdentifier: 
   <Health>k__BackingField: 100
-  <Type>k__BackingField: -7
+  <Type>k__BackingField: 0
   <MaxHealth>k__BackingField: 100
-  <Speed>k__BackingField: 0.0005
+  <Speed>k__BackingField: 5
   <MaxSpeed>k__BackingField: 10
   <Damage>k__BackingField: 0
-  <InteractionRange>k__BackingField: 10
-  <Body>k__BackingField: {fileID: 5334339924719463549, guid: bf34f0ff673a55e4ebd980183cbf1a3b,
-    type: 3}
-  <AttackRange>k__BackingField: 1
+  <InteractionRange>k__BackingField: 2
+  <Body>k__BackingField: {fileID: 0}
