@@ -111,7 +111,7 @@ namespace Modules.Player
             var angle = Mathf.Atan2(cannonForward.x, cannonForward.z) * Mathf.Rad2Deg;
 
             // draw handles label angle on the middle of the arc
-            UnityEditor.Handles.Label(cannonPos + Quaternion.Euler(0, angle, 0) * Vector3.forward * 2.5F,
+            UnityEditor.Handles.Label(cannonPos + Quaternion.Euler(0, angle, 0) * Vector3.forward * 5.5F,
                 $"{angle:0}°");
         }
 
