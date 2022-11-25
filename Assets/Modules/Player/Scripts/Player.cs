@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using Enums;
+using UnityEngine;
 using Modules.Character;
+using UnityEngine.AddressableAssets;
 using UnityEngine.InputSystem;
 
 namespace Modules.Player
@@ -13,6 +15,7 @@ namespace Modules.Player
         [SerializeField] private CollectorController m_bodyController;
 
         private Ammo m_ammo = new();
+        private UIScreenPlayerHUD m_HUD;
 
         public override void Attack()
         {
@@ -49,6 +52,22 @@ namespace Modules.Player
             var containers = GetComponentsInChildren<Container>();
             foreach (var container in containers)
                 container.OnDiscard += m_ammo.AddAmmo;
+
+            // Addressables load PlayerHUD
+            var hudRef = Addressables.LoadAssetAsync<GameObject>("HUD/Player")
+                .WaitForCompletion()
+                .GetComponent<UIScreenPlayerHUD>();
+
+            // Instantiate HUD
+            m_HUD = Instantiate(hudRef);
+
+            foreach (var type in m_ammo.Clips.Keys)
+            {
+                m_HUD.AddAmmoButton(type, () => m_ammo.SetAmmoType(type));
+                m_ammo.Clips[type].OnChange += UpdateAmmoDisplay;
+            }
+
+            m_HUD.Show();
         }
 
         private void OnEnable()
@@ -88,6 +107,16 @@ namespace Modules.Player
 
             // Get rotate value and do rotate
             Rotate(m_playerInput.actions["Look"].ReadValue<Vector2>());
+        }
+
+        // Private Methods ---------------------------------------------------------------------------------------------
+
+        private void UpdateAmmoDisplay()
+        {
+            foreach (var type in m_ammo.Clips.Keys)
+            {
+                m_HUD.UpdateAmmoButton(type, m_ammo.Clips[type].Length > 0 ? m_ammo.PeekAmmo(type) : 0);
+            }
         }
     }
 }

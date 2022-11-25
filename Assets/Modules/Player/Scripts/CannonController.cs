@@ -62,7 +62,6 @@ namespace Modules.Player
 
         protected override void OnDeath()
         {
-            throw new System.NotImplementedException();
         }
 
         // Unity Methods -----------------------------------------------------

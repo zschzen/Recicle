@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Enums;
+using Modules.UIScreen;
 
 namespace Modules.Player
 {
@@ -8,19 +8,31 @@ namespace Modules.Player
     {
         // Fields --------------------------------------------------------------------------------------------------------------------------------
 
-        private Dictionary<DiscardTypes, Queue<int>> m_clips;
+        private Dictionary<DiscardTypes, QueueValueNotify<int>> m_clips;
         private DiscardTypes m_currentAmmoType = DiscardTypes.Recyclable;
+
+        // Properties --------------------------------------------------------------------------------------------------------------------------------
+        internal IReadOnlyDictionary<DiscardTypes, QueueValueNotify<int>> Clips => m_clips;
 
         // Public Methods ----------------------------------------------------------------------------------------------------------------------------------
 
         public Ammo()
         {
-            m_clips = new Dictionary<DiscardTypes, Queue<int>>
+            m_clips = new Dictionary<DiscardTypes, QueueValueNotify<int>>
             {
-                { DiscardTypes.Recyclable, new Queue<int>() },
-                { DiscardTypes.Organic, new Queue<int>() }
+                { DiscardTypes.Recyclable, new QueueValueNotify<int>() },
+                { DiscardTypes.Organic, new QueueValueNotify<int>() }
             };
         }
+
+        public int PeekAmmo(DiscardTypes ammoType) =>
+            m_clips.TryGetValue(ammoType, out var ammo) ? ammo.Peek() : default;
+
+        /// <summary>
+        /// Sets the current ammo type to the given type.
+        /// </summary>
+        /// <param name="ammoType"></param>
+        public void SetAmmoType(DiscardTypes ammoType) => m_currentAmmoType = ammoType;
 
         /// <summary>
         /// Determines whether the player has ammo or not.
@@ -31,7 +43,7 @@ namespace Modules.Player
             var ammo = m_clips[m_currentAmmoType];
 
             // Check if ammo is not empty or if not with value of zero
-            return ammo.Any() && ammo.Peek() > 0;
+            return ammo.Length > 0 && ammo.Peek() > 0;
         }
 
         /// <summary>
