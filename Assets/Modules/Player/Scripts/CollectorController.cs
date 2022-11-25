@@ -46,7 +46,7 @@ namespace Modules.Player
         {
             // Draw a sphere to represent interaction range onto body controller
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, CharacterData.InteractionRange);
+            Gizmos.DrawRay(transform.position, transform.forward * CharacterData.InteractionRange);
         }
 #endif
 
@@ -66,12 +66,11 @@ namespace Modules.Player
             else TryDisposeToContainer();
         }
 
-        private bool TrySphereCast(LayerMask layerMask, out RaycastHit hit)
+        private bool TryCubeCast(LayerMask layerMask, out RaycastHit hit)
         {
-            // Tries to cast a sphere to the direction
-            var hits = Physics.SphereCastNonAlloc(transform.position,
-                CharacterData.InteractionRange, transform.forward,
-                m_hits, 0, layerMask);
+            // Tries to cast a non alloc box cast
+            var hits = Physics.BoxCastNonAlloc(transform.position, Vector3.one,
+                transform.forward, m_hits, transform.rotation, CharacterData.InteractionRange, layerMask);
 
             // Only continues if there is a hit
             if (hits == 0)
@@ -90,7 +89,7 @@ namespace Modules.Player
         /// </summary>
         private void TryAttachItem()
         {
-            if (!TrySphereCast(LayerMask.GetMask("Collectable"), out var hit)) return;
+            if (!TryCubeCast(LayerMask.GetMask("Collectable"), out var hit)) return;
 
             // If the hit has an item component
             if (!hit.collider.TryGetComponent(out Collectable.Collectable item)) return;
@@ -106,7 +105,7 @@ namespace Modules.Player
         /// </summary>
         private void TryDisposeToContainer()
         {
-            if (!TrySphereCast(LayerMask.GetMask("Container"), out var hit)) return;
+            if (!TryCubeCast(LayerMask.GetMask("Container"), out var hit)) return;
 
             // If the hit has an Container component
             if (!hit.collider.TryGetComponent(out Container container)) return;
