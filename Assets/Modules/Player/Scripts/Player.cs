@@ -1,13 +1,11 @@
-﻿using Enums;
-using UnityEngine;
-using Modules.Character;
+﻿using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.InputSystem;
 
 namespace Modules.Player
 {
     [RequireComponent(typeof(PlayerInput))]
-    public class Player : ABaseCharacter<SOCharacterData>
+    public class Player : MonoBehaviour
     {
         [SerializeField] private PlayerInput m_playerInput;
 
@@ -17,32 +15,22 @@ namespace Modules.Player
         private Ammo m_ammo = new();
         private UIScreenPlayerHUD m_HUD;
 
-        public override void Attack()
-        {
-        }
-
         /// <summary>
         /// Implementation used to only rotate the cannon.
         /// </summary>
         /// <param name="direction"></param>
-        public override void Move(Vector2 direction) => m_cannonController.Rotate(direction);
+        private void Move(Vector2 direction) => m_cannonController.Rotate(direction);
 
         /// <summary>
         /// Implementation used to move and rotate the body of the collector player
         /// </summary>
         /// <param name="direction"></param>
-        public override void Rotate(Vector2 direction) => m_bodyController.Move(direction);
-
-        protected override void OnDeath()
-        {
-        }
+        private void Rotate(Vector2 direction) => m_bodyController.Move(direction);
 
         // Unity Methods -----------------------------------------------------------------------------------------------
 
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
-
             // Setup cannon
             m_cannonController.GetAmmoCount = m_ammo.RetrieveAmmoCount;
             m_cannonController.GetAmmoType = m_ammo.GetCurrentAmmoType;
@@ -85,7 +73,7 @@ namespace Modules.Player
 
         private void Update()
         {
-            if (bIsDead) return;
+            if (m_cannonController.IsDead || m_bodyController.IsDead) return;
             //if (!m_playerInput.currentActionMap.name.Equals("Player")) return; // Not needed as we are using a single action map
 
             // Get move value and do move
@@ -115,21 +103,21 @@ namespace Modules.Player
             }
 
             // Setup healths callback
-            m_cannonController.CharacterData.Health.OnChange +=
-                () => m_HUD.UpdateCollectorHealth(m_bodyController.CharacterData.Health.value,
+            m_cannonController.Health.OnChange +=
+                () => m_HUD.UpdateCollectorHealth(m_bodyController.Health.value,
                     m_bodyController.CharacterData.MaxHealth);
 
-            m_bodyController.CharacterData.Health.OnChange +=
-                () => m_HUD.UpdateCollectorHealth(m_cannonController.CharacterData.Health.value,
+            m_bodyController.Health.OnChange +=
+                () => m_HUD.UpdateCollectorHealth(m_cannonController.Health.value,
                     m_cannonController.CharacterData.MaxHealth);
 
             // Manually update displays
             UpdateAmmoDisplay();
 
-            m_HUD.UpdateCollectorHealth(m_bodyController.CharacterData.Health.value,
+            m_HUD.UpdateCollectorHealth(m_bodyController.Health.value,
                 m_bodyController.CharacterData.MaxHealth);
 
-            m_HUD.UpdateCannonHealth(m_bodyController.CharacterData.Health.value,
+            m_HUD.UpdateCannonHealth(m_bodyController.Health.value,
                 m_bodyController.CharacterData.MaxHealth);
 
             // Finally, show the HUD
