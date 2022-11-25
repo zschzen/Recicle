@@ -12,8 +12,10 @@ using UnityEngine.UI;
 public class UIScreenPlayerHUD : UIScreen
 {
     [SerializeField] private Button m_ammoButtomRef;
-
     [SerializeField] private RectTransform m_ammoButtonsContainer;
+
+    [Space] [SerializeField] private TMP_Text m_cannonHealthText;
+    [SerializeField] private TMP_Text m_collectorHealthText;
 
     private Dictionary<DiscardTypes, Button> m_ammoButtons = new();
 
@@ -50,7 +52,17 @@ public class UIScreenPlayerHUD : UIScreen
         Button ammoButton = m_ammoButtons[type];
 
         // Update the ammo count text
-        ammoButton.GetComponentInChildren<TMP_Text>().text = ammoCount.ToString();
+        ammoButton.GetComponentInChildren<TMP_Text>().text = $"{type.ToString()}\n{ammoCount}";
+    }
+
+    public void UpdateCannonHealth(int curHealth, int maxHealth)
+    {
+        m_cannonHealthText.text = $"Cannon Health: {curHealth}/{maxHealth}";
+    }
+
+    public void UpdateCollectorHealth(int curHealth, int maxHealth)
+    {
+        m_collectorHealthText.text = $"Collector Health: {curHealth}/{maxHealth}";
     }
 
     // Unity methods ------------------------------------------------------------------------------------------------

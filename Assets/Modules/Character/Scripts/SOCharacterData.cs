@@ -1,4 +1,5 @@
 ﻿using Enums;
+using Modules.UIScreen;
 using UnityEngine;
 
 namespace Modules.Character
@@ -8,7 +9,7 @@ namespace Modules.Character
     {
         [field: Header("Attributes")]
         [field: SerializeField]
-        public int Health { get; private set; } = 100;
+        public ValueNotify<int> Health { get; internal set; } = new(3);
 
         [field: SerializeField] public DiscardTypes Type { get; private set; }
 

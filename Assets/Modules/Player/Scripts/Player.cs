@@ -53,21 +53,7 @@ namespace Modules.Player
             foreach (var container in containers)
                 container.OnDiscard += m_ammo.AddAmmo;
 
-            // Addressables load PlayerHUD
-            var hudRef = Addressables.LoadAssetAsync<GameObject>("HUD/Player")
-                .WaitForCompletion()
-                .GetComponent<UIScreenPlayerHUD>();
-
-            // Instantiate HUD
-            m_HUD = Instantiate(hudRef);
-
-            foreach (var type in m_ammo.Clips.Keys)
-            {
-                m_HUD.AddAmmoButton(type, () => m_ammo.SetAmmoType(type));
-                m_ammo.Clips[type].OnChange += UpdateAmmoDisplay;
-            }
-
-            m_HUD.Show();
+            SetupHUD();
         }
 
         private void OnEnable()
@@ -110,6 +96,45 @@ namespace Modules.Player
         }
 
         // Private Methods ---------------------------------------------------------------------------------------------
+
+        private void SetupHUD()
+        {
+            // Addressables load PlayerHUD
+            var hudRef = Addressables.LoadAssetAsync<GameObject>("HUD/Player")
+                .WaitForCompletion()
+                .GetComponent<UIScreenPlayerHUD>();
+
+            // Instantiate HUD
+            m_HUD = Instantiate(hudRef);
+
+            // Setup ammo button callbacks
+            foreach (var type in m_ammo.Clips.Keys)
+            {
+                m_HUD.AddAmmoButton(type, () => m_ammo.SetAmmoType(type));
+                m_ammo.Clips[type].OnChange += UpdateAmmoDisplay;
+            }
+
+            // Setup healths callback
+            m_cannonController.CharacterData.Health.OnChange +=
+                () => m_HUD.UpdateCollectorHealth(m_bodyController.CharacterData.Health.value,
+                    m_bodyController.CharacterData.MaxHealth);
+
+            m_bodyController.CharacterData.Health.OnChange +=
+                () => m_HUD.UpdateCollectorHealth(m_cannonController.CharacterData.Health.value,
+                    m_cannonController.CharacterData.MaxHealth);
+
+            // Manually update displays
+            UpdateAmmoDisplay();
+
+            m_HUD.UpdateCollectorHealth(m_bodyController.CharacterData.Health.value,
+                m_bodyController.CharacterData.MaxHealth);
+
+            m_HUD.UpdateCannonHealth(m_bodyController.CharacterData.Health.value,
+                m_bodyController.CharacterData.MaxHealth);
+
+            // Finally, show the HUD
+            m_HUD.Show();
+        }
 
         private void UpdateAmmoDisplay()
         {

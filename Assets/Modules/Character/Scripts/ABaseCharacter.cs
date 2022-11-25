@@ -7,12 +7,10 @@ namespace Modules.Character
     {
         // Properties ------------------------------
         [field: SerializeField] public T CharacterData { get; protected set; }
-        [field: SerializeField] public int Health { get; protected set; }
-        [field: SerializeField] public float Speed { get; protected set; }
 
         // Fields -----------------------------------
 
-        public float SpeedPerFrame => Speed * Time.deltaTime;
+        public float SpeedPerFrame => CharacterData.Speed * Time.deltaTime;
 
         protected int MaxHealth => CharacterData.MaxHealth;
         protected float MaxSpeed => CharacterData.MaxSpeed;
@@ -20,7 +18,7 @@ namespace Modules.Character
         /// <summary>
         /// Determines if the character is dead.
         /// </summary>
-        protected bool bIsDead => Health < 1;
+        protected bool bIsDead => CharacterData.Health < 1;
 
         // Public Methods --------------------------------------
 
@@ -29,9 +27,6 @@ namespace Modules.Character
             if (data == default) return;
 
             CharacterData = data;
-
-            Health = data.MaxHealth;
-            Speed = data.MaxSpeed;
         }
 
         /// <summary>
@@ -57,7 +52,7 @@ namespace Modules.Character
             if (bIsDead) return;
 
             // Apply damage
-            Health -= damage;
+            CharacterData.Health.value -= damage;
 
             // Check death
             if (!bIsDead) return;
