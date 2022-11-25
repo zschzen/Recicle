@@ -21,9 +21,11 @@ namespace Modules.Projectile
 
         // Public methods -----------------------------------------------------------------------------------------------
 
-        public void Launch(Vector3 direction)
+        public void Launch(Vector3 direction, DiscardTypes type)
         {
+            Type = type;
             m_rigidbody.velocity = direction * Speed;
+            m_renderer.material.color = GetColorByType(type);
         }
 
         // Unity Methods ----------------------------------------------------------------------
@@ -62,6 +64,9 @@ namespace Modules.Projectile
 
         // Private Methods ---------------------------------------------------------------------
 
-        private void SetColor(Color color) => m_renderer.material.color = color;
+        private Color GetColorByType(DiscardTypes type)
+        {
+            return Color.white;
+        }
     }
 }

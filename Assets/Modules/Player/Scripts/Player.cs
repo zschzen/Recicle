@@ -1,4 +1,8 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using DG.Tweening;
+using Enums;
 using UnityEngine;
 using Modules.Character;
 using UnityEngine.AddressableAssets;
@@ -18,19 +22,35 @@ namespace Modules.Player
         private Projectile.Projectile m_projecRef;
         private IObjectPool<Projectile.Projectile> m_projectilePool;
 
+        private RaycastHit[] m_hits = new RaycastHit[1];
+
+        private DiscardTypes m_currentAmmoType = DiscardTypes.Recyclable;
+
+        private Dictionary<DiscardTypes, Queue<int>> m_ammo =
+            new()
+            {
+                { DiscardTypes.Recyclable, new Queue<int>() },
+                { DiscardTypes.Organic, new Queue<int>() }
+            };
+
         public override void Attack()
         {
-            // Get projectile from pool
-            var projectile = m_projectilePool.Get();
+            if (!bHasAmmo()) return;
+            if (DOTween.IsTweening(this)) return;
 
-            // Set projectile position and rotation
-            var trans = m_cannonController.transform;
-            projectile.transform.position = (trans.forward * 2F) + trans.position;
+            // Take ammo
+            var ammo = m_ammo[m_currentAmmoType].Dequeue();
 
-            // Set projectile forwad to cannon forward
-            projectile.Launch(trans.forward);
+            Debug.Log($"Ammo: {ammo}");
 
-            projectile.gameObject.SetActive(true);
+            for (int i = 0; i < ammo; i++)
+            {
+                _ = DOVirtual.DelayedCall(i * 0.125F, () =>
+                {
+                    var projectile = m_projectilePool.Get();
+                    SetupProjectile(projectile);
+                }).SetId(this);
+            }
         }
 
         /// <summary>
@@ -89,7 +109,10 @@ namespace Modules.Player
 
             // Create a pool of projectiles
             m_projectilePool = new ObjectPool<Projectile.Projectile>(
-                CreatePooleableProjectile, OnTakeFromPool, OnReturnedToPool, OnDestroyPoolObject, false, 10, 10);
+                CreatePooleableProjectile, OnTakeFromPool,
+                OnReturnedToPool, OnDestroyPoolObject,
+                false, 10, 10
+            );
         }
 
         private void OnEnable()
@@ -166,6 +189,10 @@ namespace Modules.Player
             // draw handles label angle on the middle of the arc
             UnityEditor.Handles.Label(cannonPos + Quaternion.Euler(0, angle, 0) * Vector3.forward * 2.5F,
                 s_sb.ToString());
+
+            // Draw a sphere to represent interaction range onto body controller
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(m_bodyController.transform.position, CharacterData.InteractionRange);
         }
 
         void OnGUI()
@@ -178,6 +205,14 @@ namespace Modules.Player
 #endif
 
         // Private Methods ----------------------------------------------------------------------------------------------
+
+        private bool bHasAmmo()
+        {
+            var ammo = m_ammo[m_currentAmmoType];
+
+            // Check if ammo is not empty or if not with value of zero
+            return ammo.Any() && ammo.Peek() > 0;
+        }
 
         private Projectile.Projectile CreatePooleableProjectile()
         {
@@ -209,6 +244,18 @@ namespace Modules.Player
             projectile.gameObject.SetActive(true);
         }
 
+        private void SetupProjectile(Projectile.Projectile projectile)
+        {
+            // Set projectile position and rotation
+            var trans = m_cannonController.transform;
+            projectile.transform.position = (trans.forward * 2F) + trans.position;
+
+            // Set projectile forwad to cannon forward
+            projectile.Launch(trans.forward, m_currentAmmoType);
+
+            projectile.gameObject.SetActive(true);
+        }
+
         /// <summary>
         /// Fires a projectile
         /// </summary>
@@ -224,6 +271,7 @@ namespace Modules.Player
 
         /// <summary>
         /// Tries to collect an item, if there is one in range
+        /// TODO: Player must carry the collected item to the correct place
         /// </summary>
         /// <param name="callback"></param>
         private void OnCollect(InputAction.CallbackContext callback)
@@ -232,8 +280,42 @@ namespace Modules.Player
             if (bIsDead) return;
             //if (callback.interaction is not TapInteraction) return;
 
-            // TODO: Collect
-            Debug.Log("Collect");
+            // do a non alloc sphere cast to check if there is an item in range
+            var hits = Physics.SphereCastNonAlloc(
+                m_bodyController.transform.position,
+                CharacterData.InteractionRange,
+                m_bodyController.transform.forward,
+                m_hits,
+                5,
+                ~0 // TODO: Add layer mask
+            );
+
+            // If there is a hit
+            if (hits < 1) return;
+
+            // Get the first hit
+            var hit = m_hits[0];
+
+            // If the hit has an item component
+            if (!hit.collider.TryGetComponent(out Collectable.Collectable item)) return;
+
+            // check if Recyclable.Hasflag item type or NonRecyclable.HasFlag item type
+            DiscardTypes ammoType;
+            if (DiscardTypes.Recyclable.HasFlag(item.Type))
+            {
+                ammoType = DiscardTypes.Recyclable;
+            }
+            else if (DiscardTypes.NonRecyclable.HasFlag(item.Type))
+            {
+                ammoType = DiscardTypes.NonRecyclable;
+            }
+            else
+            {
+                return;
+            }
+
+            // Enqueue the size of the item on the corresponding discard type
+            m_ammo[ammoType].Enqueue(item.Size);
         }
     }
 }
