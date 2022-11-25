@@ -38,8 +38,17 @@ namespace Modules.Enemy
 
         public override void Move(Vector2 direction)
         {
+            if (direction.Equals(default)) return;
+
+            // Move
             var moveDirection = new Vector3(direction.x, 0, direction.y);
             m_characterController.Move(moveDirection * SpeedPerFrame);
+
+            // lock y axis
+            var trans = transform;
+            var pos = trans.position;
+
+            trans.position = new Vector3(pos.x, 0, pos.z);
         }
 
         public override void Rotate(Vector2 direction)
@@ -64,6 +73,7 @@ namespace Modules.Enemy
 
         public void BatchLateUpdate()
         {
+            // Perform state transitions
             Think();
 
             // Act according to state
@@ -88,6 +98,10 @@ namespace Modules.Enemy
         protected override void Awake()
         {
             base.Awake();
+
+            // !Moved to project settings!
+            // ensures auto sync transform, due to CharacterController bug ID 1135083
+            // Physics.autoSyncTransforms = true;
 
             // Find player and city
             s_playerTransform ??= GameObject.FindWithTag("Player").transform;
@@ -126,9 +140,10 @@ namespace Modules.Enemy
 
         private void PursueTarget(Transform target)
         {
+            // Get the direction to the target
             var direction = target.position - transform.position;
+            // Adjust vector to 2D
             direction.y = direction.z;
-            //direction.Normalize();
 
             Move(direction);
             Rotate(direction);
