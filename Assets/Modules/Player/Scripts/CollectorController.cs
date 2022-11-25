@@ -66,30 +66,12 @@ namespace Modules.Player
             else TryDisposeToContainer();
         }
 
-        private bool TryCubeCast(LayerMask layerMask, out RaycastHit hit)
-        {
-            // Tries to cast a non alloc box cast
-            var hits = Physics.BoxCastNonAlloc(transform.position, Vector3.one,
-                transform.forward, m_hits, transform.rotation, CharacterData.InteractionRange, layerMask);
-
-            // Only continues if there is a hit
-            if (hits == 0)
-            {
-                hit = default;
-                return false;
-            }
-
-            // Returns the first hit
-            hit = m_hits[0];
-            return true;
-        }
-
         /// <summary>
         /// Tries to find and attach an item to the collector body.
         /// </summary>
         private void TryAttachItem()
         {
-            if (!TryCubeCast(LayerMask.GetMask("Collectable"), out var hit)) return;
+            if (!TryCubeCast(LayerMask.GetMask("Collectable"), ref m_hits, out var hit)) return;
 
             // If the hit has an item component
             if (!hit.collider.TryGetComponent(out Collectable.Collectable item)) return;
@@ -105,7 +87,7 @@ namespace Modules.Player
         /// </summary>
         private void TryDisposeToContainer()
         {
-            if (!TryCubeCast(LayerMask.GetMask("Container"), out var hit)) return;
+            if (!TryCubeCast(LayerMask.GetMask("Container"), ref m_hits, out var hit)) return;
 
             // If the hit has an Container component
             if (!hit.collider.TryGetComponent(out Container container)) return;

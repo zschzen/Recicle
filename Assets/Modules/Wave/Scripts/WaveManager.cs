@@ -103,10 +103,21 @@ namespace Modules.Wave
 
                 // Increase wave index while it's less than wave count
             } while (++m_currentWaveIndex.value < m_waveData.WaveCount);
+
+            SpawnBoss();
         }
 
         // Spawn enemy at random spawn point
         private void SpawnEnemy()
+        {
+            var enemy = m_enemyPool.Get();
+            enemy.transform.position = GetRandomSpawnPoint();
+        }
+
+        /// <summary>
+        /// Set enemy's boss
+        /// </summary>
+        private void SpawnBoss()
         {
             var enemy = m_enemyPool.Get();
             enemy.transform.position = GetRandomSpawnPoint();

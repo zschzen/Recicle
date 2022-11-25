@@ -22,4 +22,4 @@ MonoBehaviour:
   <InteractionRange>k__BackingField: 4
   <Body>k__BackingField: {fileID: 5334339924719463549, guid: bf34f0ff673a55e4ebd980183cbf1a3b,
     type: 3}
-  <AttackRange>k__BackingField: 1
+  <AttackRange>k__BackingField: 2

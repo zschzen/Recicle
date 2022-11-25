@@ -31,8 +31,10 @@ namespace Modules.Enemy
 
         private State CurrentState;
 
-        private bool bIsInRange(Transform target, float range) =>
-            (transform.position - target.position).magnitude < range;
+        private RaycastHit[] m_hits = new RaycastHit[1];
+
+        private bool bIsInRange(Transform target, float range, out float distance) =>
+            (distance = (transform.position - target.position).magnitude) < range;
 
         // Public methods -------------------------------------------------------------------
 
@@ -64,6 +66,21 @@ namespace Modules.Enemy
 
         public override void Attack()
         {
+            // Tries to get Collectors player body
+            if (TryCubeCast(LayerMask.GetMask("Collectors"), ref m_hits, out var hit))
+            {
+                if (hit.collider.TryGetComponent<ABaseCharacter<SOCharacterData>>(out var collector))
+                {
+                    collector.TakeDamage(1, Type);
+                    return;
+                }
+            }
+
+            // Try to get city
+            if (!TryCubeCast(LayerMask.GetMask("City"), ref m_hits, out hit)) return;
+            if (!hit.collider.TryGetComponent<ABaseCharacter<SOCharacterData>>(out var city)) return;
+
+            city.TakeDamage(1, Type);
         }
 
         protected override void OnDeath()
@@ -130,12 +147,16 @@ namespace Modules.Enemy
 
         private void Think()
         {
-            // Check if the player is in attack range
-            // Check if the player is in interaction range
-            // If not, move to the city
-            CurrentState = bIsInRange(s_playerTransform, CharacterData.InteractionRange)
-                ? bIsInRange(s_playerTransform, CharacterData.AttackRange) ? State.Attack : State.MoveToPlayer
-                : State.MoveToCity;
+            // if city or player in range, set state to attack
+            if (bIsInRange(s_cityTransform, CharacterData.AttackRange, out var cityDist) ||
+                bIsInRange(s_playerTransform, CharacterData.AttackRange, out var playerDist))
+            {
+                CurrentState = State.Attack;
+                return;
+            }
+
+            // Move to the closest target
+            CurrentState = cityDist < playerDist ? State.MoveToCity : State.MoveToPlayer;
         }
 
         private void PursueTarget(Transform target)

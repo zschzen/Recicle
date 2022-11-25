@@ -83,6 +83,24 @@ namespace Modules.Character
 
         // Private Methods -------------------------------------
 
+        protected virtual bool TryCubeCast(LayerMask layerMask, ref RaycastHit[] rayHits, out RaycastHit hit)
+        {
+            // Tries to cast a non alloc box cast
+            var hits = Physics.BoxCastNonAlloc(transform.position, Vector3.one,
+                transform.forward, rayHits, transform.rotation, CharacterData.InteractionRange, layerMask);
+
+            // Only continues if there is a hit
+            if (hits == 0)
+            {
+                hit = default;
+                return false;
+            }
+
+            // Returns the first hit
+            hit = rayHits[0];
+            return true;
+        }
+
         /// <summary>
         /// Deal with death.
         /// <br/>
