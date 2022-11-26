@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using DG.Tweening;
+﻿using System.Collections;
 using Enums;
 using Modules.UIScreen;
 using UnityEngine;
@@ -111,6 +109,7 @@ namespace Modules.Wave
         private void SpawnEnemy()
         {
             var enemy = m_enemyPool.Get();
+            enemy.SetType(GetRandomDiscardType());
             enemy.transform.position = GetRandomSpawnPoint();
         }
 
