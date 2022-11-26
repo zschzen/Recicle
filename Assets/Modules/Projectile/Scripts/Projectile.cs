@@ -1,4 +1,3 @@
-using System;
 using DG.Tweening;
 using Enums;
 using Modules.Factory;
@@ -35,7 +34,7 @@ namespace Modules.Projectile
             _ = transform.DOScale(1f, 0.1f).SetEase(Ease.OutBack);
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
             base.OnDisable();
 
