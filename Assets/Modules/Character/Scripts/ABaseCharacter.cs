@@ -1,4 +1,6 @@
-﻿using Enums;
+﻿using System;
+using Enums;
+using Modules.UIScreen;
 using UnityEngine;
 
 namespace Modules.Character
@@ -8,6 +10,8 @@ namespace Modules.Character
         // Properties ------------------------------
         [field: SerializeField] public T CharacterData { get; protected set; }
 
+        [field: SerializeField] public ValueNotify<int> Health { get; protected set; } = new(3);
+
         // Fields -----------------------------------
 
         public float SpeedPerFrame => CharacterData.Speed * Time.deltaTime;
@@ -15,12 +19,12 @@ namespace Modules.Character
         protected int MaxHealth => CharacterData.MaxHealth;
         protected float MaxSpeed => CharacterData.MaxSpeed;
 
+        // Public Methods --------------------------------------
+
         /// <summary>
         /// Determines if the character is dead.
         /// </summary>
-        protected bool bIsDead => CharacterData.Health < 1;
-
-        // Public Methods --------------------------------------
+        public bool IsDead => Health < 1;
 
         public virtual void SetData(T data)
         {
@@ -41,22 +45,10 @@ namespace Modules.Character
         /// <param name="type">Type of damage</param>
         public virtual void TakeDamage(int damage, DiscardTypes type)
         {
-            // Organic only takes damage from recyclable and vice versa
-            switch (type)
-            {
-                case DiscardTypes.Organic when CharacterData.Type.HasFlag(DiscardTypes.Organic):
-                case DiscardTypes.Recyclable when CharacterData.Type.HasFlag(DiscardTypes.Recyclable):
-                    return;
-            }
-
-            if (bIsDead) return;
+            if (IsDead) return;
 
             // Apply damage
-            CharacterData.Health.value -= damage;
-
-            // Check death
-            if (!bIsDead) return;
-            OnDeath();
+            Health.value -= damage;
         }
 
         /// <summary>
@@ -81,13 +73,54 @@ namespace Modules.Character
             HandleSkin();
         }
 
+        private void OnEnable()
+        {
+            Health.OnChange += OnDeath_Impl;
+        }
+
+        private void OnDisable()
+        {
+            Health.OnChange -= OnDeath_Impl;
+        }
+
+        private void OnDeath_Impl()
+        {
+            if (!IsDead) return;
+
+            OnDeath();
+        }
+
+#if UNITY_EDITOR
+        protected static readonly System.Text.StringBuilder s_stringBuilder = new();
+
+        protected virtual string GetDebugString()
+        {
+            s_stringBuilder.Clear();
+
+            s_stringBuilder.Append("Health: ").Append(Health).AppendLine();
+
+            return s_stringBuilder.ToString();
+        }
+
+        protected virtual void OnDrawGizmos()
+        {
+            UnityEditor.Handles.Label(transform.position + Vector3.up * 2.75F, GetDebugString());
+
+            Gizmos.DrawLine(transform.position, transform.position + Vector3.up * 2F);
+
+            // Draw the forward direction
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(transform.position, transform.position + transform.forward * CharacterData.InteractionRange);
+        }
+#endif
+
         // Private Methods -------------------------------------
 
-        protected virtual bool TryCubeCast(LayerMask layerMask, ref RaycastHit[] rayHits, out RaycastHit hit)
+        protected virtual bool TryCubeCast(LayerMask? layerMask, ref RaycastHit[] rayHits, out RaycastHit hit)
         {
             // Tries to cast a non alloc box cast
             var hits = Physics.BoxCastNonAlloc(transform.position, Vector3.one,
-                transform.forward, rayHits, transform.rotation, CharacterData.InteractionRange, layerMask);
+                transform.forward, rayHits, transform.rotation, CharacterData.InteractionRange, (LayerMask)layerMask);
 
             // Only continues if there is a hit
             if (hits == 0)
