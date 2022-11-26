@@ -103,26 +103,25 @@ namespace Modules.Player
             }
 
             // Setup healths callback
-            m_cannonController.Health.OnChange +=
-                () => m_HUD.UpdateCollectorHealth(m_bodyController.Health.value,
-                    m_bodyController.CharacterData.MaxHealth);
-
-            m_bodyController.Health.OnChange +=
-                () => m_HUD.UpdateCollectorHealth(m_cannonController.Health.value,
-                    m_cannonController.CharacterData.MaxHealth);
+            m_cannonController.Health.OnChange += OnCannonHealthChange;
+            m_bodyController.Health.OnChange += OnCollectorHealthChange;
 
             // Manually update displays
             UpdateAmmoDisplay();
-
-            m_HUD.UpdateCollectorHealth(m_bodyController.Health.value,
-                m_bodyController.CharacterData.MaxHealth);
-
-            m_HUD.UpdateCannonHealth(m_bodyController.Health.value,
-                m_bodyController.CharacterData.MaxHealth);
+            OnCannonHealthChange();
+            OnCollectorHealthChange();
 
             // Finally, show the HUD
             m_HUD.Show();
         }
+
+        private void OnCannonHealthChange() =>
+            m_HUD.UpdateCannonHealth(m_cannonController.Health.value,
+                m_cannonController.CharacterData.MaxHealth);
+
+        private void OnCollectorHealthChange() =>
+            m_HUD.UpdateCollectorHealth(m_bodyController.Health.value,
+                m_bodyController.CharacterData.MaxHealth);
 
         private void UpdateAmmoDisplay()
         {
