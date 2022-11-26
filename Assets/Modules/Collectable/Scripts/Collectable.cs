@@ -34,6 +34,7 @@ namespace Modules.Collectable
         protected override void OnDisable()
         {
             // Reset type
+            transform.SetParent(default);
             Type = DiscardTypes.None;
             Size = 0;
 
