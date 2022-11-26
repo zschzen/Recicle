@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Modules.Wave
+namespace Modules.UIScreen
 {
     [CreateAssetMenu(fileName = "Wave Data", menuName = "Wave/Data", order = 0)]
     public class SOWaveData : ScriptableObject
@@ -9,6 +9,6 @@ namespace Modules.Wave
         [field: SerializeField] public int EnemyCount { get; private set; }
 
         [field: SerializeField] public float SpawnDelay { get; private set; }
-        [field: SerializeField] public float WaveDelay { get; private set; }
+        [field: SerializeField] public uint WaveDelay { get; private set; }
     }
 }

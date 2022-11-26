@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Enums;
 using Modules.UIScreen;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.Pool;
 using Random = UnityEngine.Random;
 
-namespace Modules.Wave
+namespace Modules.UIScreen
 {
     public class WaveManager : MonoBehaviour
     {
@@ -15,11 +16,14 @@ namespace Modules.Wave
         [SerializeField] private Transform[] m_spawnPoints;
 
         private ValueNotify<int> m_currentWaveIndex = new(0);
+        private ValueNotify<uint> m_timeToNextWave = new(0);
 
         private Enemy.Enemy m_enemyRef;
         private IObjectPool<Enemy.Enemy> m_enemyPool;
 
         private Coroutine m_waveCoroutine;
+        private Coroutine m_spawnCoroutine;
+        private UIScreenWave m_waveScreen;
 
         // Public Methods -------------------------------------------------------
 
@@ -28,6 +32,8 @@ namespace Modules.Wave
             if (m_waveCoroutine != null) StopCoroutine(m_waveCoroutine);
 
             m_currentWaveIndex.value = 0;
+
+            m_timeToNextWave.value = m_waveData.WaveDelay;
             m_waveCoroutine = StartCoroutine(WaveRoutine());
         }
 
@@ -54,9 +60,31 @@ namespace Modules.Wave
 
             // Start wave
             StartWave();
+
+            // Show wave screen
+            LoadUI();
         }
 
         // Private Methods ------------------------------------------------------
+
+        private void LoadUI()
+        {
+            // Addressables load wavehud
+            var hudRef = Addressables.LoadAssetAsync<GameObject>("HUD/Wave")
+                .WaitForCompletion()
+                .GetComponent<UIScreenWave>();
+
+            // Instantiate
+            m_waveScreen = Instantiate(hudRef);
+
+            // Register to events
+            m_currentWaveIndex.OnChange += OnCurrentWaveIndexChanged;
+            m_timeToNextWave.OnChange += OnTimeToNextWaveChanged;
+
+            // Manually call event
+            OnCurrentWaveIndexChanged();
+            OnTimeToNextWaveChanged();
+        }
 
         /// <summary>
         /// Get random spawn point position
@@ -81,28 +109,53 @@ namespace Modules.Wave
         /// <returns></returns>
         private IEnumerator WaveRoutine()
         {
-            var spawnDelay = new WaitForSeconds(m_waveData.SpawnDelay);
-            var waveDelay = new WaitForSeconds(m_waveData.WaveDelay);
-
             do
             {
-                // For each enemy count in single wave
-                for (int i = 0; i < m_waveData.EnemyCount; i++)
-                {
-                    // Do spawn enemy
-                    SpawnEnemy();
+                // kills m_spawnCoroutine
+                if (m_spawnCoroutine != null) StopCoroutine(m_spawnCoroutine);
+                m_spawnCoroutine = StartCoroutine(SpawnRoutine());
 
-                    // Wait between spawns
-                    yield return spawnDelay;
-                }
-
-                // Wait between waves
-                yield return waveDelay;
+                // Wait the coroutine Countdown()
+                yield return WaveCountdown();
 
                 // Increase wave index while it's less than wave count
             } while (++m_currentWaveIndex.value < m_waveData.WaveCount);
 
             SpawnBoss();
+        }
+
+        private IEnumerator WaveCountdown()
+        {
+            float normalizedTime = 0;
+            while (normalizedTime <= 1f)
+            {
+                m_timeToNextWave.value = (uint)(m_waveData.WaveDelay * (1 - normalizedTime));
+                normalizedTime += Time.deltaTime / m_waveData.WaveDelay;
+                yield return null;
+            }
+        }
+        
+        private IEnumerator SpawnRoutine()
+        {
+            var spawnDelay = new WaitForSeconds(m_waveData.SpawnDelay);
+
+            // Spawn enemies
+            for (int i = 0; i < m_waveData.EnemyCount; i++)
+            {
+                // Get random spawn point
+                var spawnPoint = GetRandomSpawnPoint();
+
+                // Get random discard type
+                var discardType = GetRandomDiscardType();
+
+                // Spawn enemy
+                var enemy = m_enemyPool.Get();
+                enemy.transform.position = spawnPoint;
+                enemy.SetType(discardType);
+
+                // Wait for spawn delay
+                yield return spawnDelay;
+            }
         }
 
         // Spawn enemy at random spawn point
@@ -152,5 +205,9 @@ namespace Modules.Wave
             // Set the projectile to active
             enemy.gameObject.SetActive(true);
         }
+
+        private void OnTimeToNextWaveChanged() => m_waveScreen.SetTimer(m_timeToNextWave.value);
+
+        private void OnCurrentWaveIndexChanged() => m_waveScreen.UpdateWaveText(m_currentWaveIndex.value + 1);
     }
 }
