@@ -1,15 +1,14 @@
 using System;
 using DG.Tweening;
 using Enums;
+using Modules.Factory;
 using UnityEngine;
 
 namespace Modules.Projectile
 {
     [RequireComponent(typeof(Collider), typeof(Rigidbody))]
-    public class Projectile : MonoBehaviour
+    public class Projectile : FactoryBehaviour
     {
-        public event Action OnRelease;
-
         [field: SerializeField] public DiscardTypes Type { get; private set; }
         [field: SerializeField] public float Speed { get; private set; }
         [field: SerializeField] public int Damage { get; private set; } = 1;
@@ -24,7 +23,6 @@ namespace Modules.Projectile
         {
             Type = type;
             m_rigidbody.velocity = direction * Speed;
-            m_renderer.material.color = GetColorByType(type);
         }
 
         // Unity Methods ----------------------------------------------------------------------
@@ -39,9 +37,6 @@ namespace Modules.Projectile
         private void OnDisable()
         {
             _ = DOTween.Kill(this);
-
-            // Release the projectile back to the pool
-            OnRelease?.Invoke();
         }
 
         private void OnBecameInvisible() => gameObject.SetActive(false);

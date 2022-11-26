@@ -1,11 +1,12 @@
 ﻿using System;
 using Enums;
+using Modules.Factory;
 using Modules.UIScreen;
 using UnityEngine;
 
 namespace Modules.Character
 {
-    public abstract class ABaseCharacter<T> : MonoBehaviour where T : SOCharacterData
+    public abstract class ABaseCharacter<T> : FactoryBehaviour where T : SOCharacterData
     {
         // Properties ------------------------------
         [field: SerializeField] public T CharacterData { get; protected set; }

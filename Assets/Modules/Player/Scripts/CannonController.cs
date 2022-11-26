@@ -2,6 +2,8 @@
 using DG.Tweening;
 using Enums;
 using Modules.Character;
+using Modules.Factory;
+using Modules.Projectile;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.InputSystem;
@@ -17,8 +19,7 @@ namespace Modules.Player
 
         // Fields ------------------------------------------
 
-        private Projectile.Projectile m_projecRef;
-        private IObjectPool<Projectile.Projectile> m_projectilePool;
+        [SerializeField] private ProjectileFactory m_projectileFactory;
 
         // Public Methods ----------------------------------------------------
 
@@ -34,7 +35,7 @@ namespace Modules.Player
             {
                 _ = DOVirtual.DelayedCall(i * 0.125F, () =>
                 {
-                    var projectile = m_projectilePool.Get();
+                    var projectile = m_projectileFactory.GetObject();
                     SetupProjectile(projectile);
                 }).SetId(this);
             }
@@ -65,23 +66,6 @@ namespace Modules.Player
         }
 
         // Unity Methods -----------------------------------------------------
-
-        protected override void Awake()
-        {
-            // Get the projectile reference
-            m_projecRef = Addressables.LoadAssetAsync<GameObject>("Projectile")
-                .WaitForCompletion()
-                .GetComponent<Projectile.Projectile>();
-
-            // Create a pool of projectiles
-            m_projectilePool = new ObjectPool<Projectile.Projectile>(
-                CreatePooleableProjectile, OnTakeFromPool,
-                OnReturnedToPool, OnDestroyPoolObject,
-                false, 10, 20
-            );
-
-            base.Awake();
-        }
 
 #if UNITY_EDITOR
         protected override void OnDrawGizmos()
@@ -129,36 +113,6 @@ namespace Modules.Player
         /// </summary>
         /// <param name="callback"></param>
         internal void OnFire(InputAction.CallbackContext callback) => Attack();
-
-        private Projectile.Projectile CreatePooleableProjectile()
-        {
-            // Clone the projectile prefab
-            var projectile = Instantiate(m_projecRef);
-
-            // Set the projectile release method
-            projectile.OnRelease += () => m_projectilePool.Release(projectile);
-
-            // Return the projectile
-            return projectile;
-        }
-
-        private void OnReturnedToPool(Projectile.Projectile projectile)
-        {
-            // Set the projectile to inactive
-            projectile.gameObject.SetActive(false);
-        }
-
-        private void OnDestroyPoolObject(Projectile.Projectile projectile)
-        {
-            // Destroy the projectile
-            Destroy(projectile.gameObject);
-        }
-
-        private void OnTakeFromPool(Projectile.Projectile projectile)
-        {
-            // Set the projectile to active
-            projectile.gameObject.SetActive(true);
-        }
 
         private void SetupProjectile(Projectile.Projectile projectile)
         {

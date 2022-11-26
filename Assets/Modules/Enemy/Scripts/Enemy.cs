@@ -29,10 +29,6 @@ namespace Modules.Enemy
             Attack
         }
 
-        // Properties ----------------------------------------------------------
-
-        public event Action OnRelease;
-
         // Fields ---------------------------------------------------------------------------
 
         [field: SerializeField] public DiscardTypes Type { get; private set; }
@@ -49,7 +45,7 @@ namespace Modules.Enemy
 
         public void SetType(DiscardTypes type)
         {
-            if (type == DiscardTypes.None) return;
+            if (Type != DiscardTypes.None) return;
 
             Type = type;
         }
@@ -192,6 +188,9 @@ namespace Modules.Enemy
 
             // Deregister as active enemy
             sr_enemiesDistanceToPlayer.Remove(this);
+
+            // Reset type
+            Type = DiscardTypes.None;
         }
 
 #if UNITY_EDITOR
