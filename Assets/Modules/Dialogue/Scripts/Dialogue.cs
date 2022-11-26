@@ -2,6 +2,7 @@ using System;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using static CustomExtensions.TextMeshProExtensions;
 
@@ -11,6 +12,7 @@ namespace Modules.Dialogue
     {
         // Properties -----------------------------------
         [field: Space(20F), SerializeField] public SODialogue DialogueData { get; private set; }
+        [field: SerializeField] public UnityEvent OnDialogueEnd { get; private set; }
 
         // Fields -------------------------------
         [Space] [SerializeField] private bool m_showOnStart = false;
@@ -102,6 +104,8 @@ namespace Modules.Dialogue
 
             // Check if we have reached the end of the dialogue.
             if (bHasNextDialogue) return;
+
+            OnDialogueEnd?.Invoke();
 
             // Hides the dialogue screen.
             Hide(DialogueData.FreezeTime);

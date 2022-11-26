@@ -3,7 +3,7 @@
 namespace Modules.Dialogue
 {
     [CreateAssetMenu(fileName = "SO Dialogue", menuName = "Screen/Dialogue", order = 0)]
-    public class SODialogue : ScriptableObject
+    public class SODialogue : SharedEvent.SharedEvent
     {
         [System.Serializable]
         public struct DialogueData
