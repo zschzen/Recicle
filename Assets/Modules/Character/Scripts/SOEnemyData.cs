@@ -6,5 +6,6 @@ namespace Modules.Character
     public class SOEnemyData : SOCharacterData
     {
         [field: SerializeField] public float AttackRange { get; private set; }
+        [field: SerializeField] public float DropTime { get; private set; }
     }
 }
