@@ -98,7 +98,14 @@ namespace Modules.Player
             // Setup ammo button callbacks
             foreach (var type in m_ammo.Clips.Keys)
             {
-                m_HUD.AddAmmoButton(type, () => m_ammo.SetAmmoType(type));
+                // Setup buttons
+                m_HUD.AddAmmoButton(type);
+
+                m_HUD.SetButtonActionByType(type, () => m_ammo.SetAmmoType(type));
+                m_HUD.SetButtonActionByType(type, m_cannonController.UpdateColor);
+                m_HUD.SetButtonColorByType(type);
+
+                // Setup ammo count
                 m_ammo.Clips[type].OnChange += UpdateAmmoDisplay;
             }
 

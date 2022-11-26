@@ -790,7 +790,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4653188380877674647, guid: e5dbe6b3a70e65941b73369f25a947df, type: 3}
-    - {fileID: 4653188380877674643, guid: e5dbe6b3a70e65941b73369f25a947df, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: e5dbe6b3a70e65941b73369f25a947df, type: 3}
 --- !u!1 &4772519870105907311 stripped
 GameObject:
@@ -817,6 +816,7 @@ MonoBehaviour:
   m_ammoButtonsContainer: {fileID: 430017376}
   m_cannonHealthText: {fileID: 8726476917405732745}
   m_collectorHealthText: {fileID: 1393392439404795009}
+  m_trashTypes: {fileID: 11400000, guid: c109354457019554e9a8fddc151a472d, type: 2}
 --- !u!225 &4772519870790216630 stripped
 CanvasGroup:
   m_CorrespondingSourceObject: {fileID: 4653188380486927179, guid: e5dbe6b3a70e65941b73369f25a947df,

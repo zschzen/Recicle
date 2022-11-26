@@ -23,6 +23,16 @@ namespace Modules.Player
 
         // Public Methods ----------------------------------------------------
 
+        public void UpdateColor()
+        {
+            var data = m_projectileFactory.GetData();
+            var color = data.GetByType(GetAmmoType.Invoke()).Color;
+            
+            Debug.Log($"Color: {color}");
+            
+            GetComponent<Renderer>().material.color = color;
+        }
+
         public override void Attack()
         {
             if (!bHasAmmo.Invoke()) return;

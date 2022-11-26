@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DG.Tweening;
 using Enums;
+using Modules.Factory;
 using Modules.UIScreen;
 using TMPro;
 using UnityEngine;
@@ -14,6 +15,8 @@ public class UIScreenPlayerHUD : UIScreen
 
     [Space] [SerializeField] private TMP_Text m_cannonHealthText;
     [SerializeField] private TMP_Text m_collectorHealthText;
+
+    [SerializeField] private SOTypeFactory m_trashTypes;
 
     private Dictionary<DiscardTypes, Button> m_ammoButtons = new();
 
@@ -29,14 +32,26 @@ public class UIScreenPlayerHUD : UIScreen
         return base.Hide(freeze, duration);
     }
 
+    public void SetButtonColorByType(DiscardTypes type)
+    {
+        if (!m_ammoButtons.TryGetValue(type, out var button)) return;
+
+        var color = m_trashTypes.GetByType(type).Color;
+        button.image.color = color;
+    }
+
+    public void SetButtonActionByType(DiscardTypes type, UnityAction action)
+    {
+        if (!m_ammoButtons.TryGetValue(type, out var button)) return;
+
+        button.onClick.AddListener(action);
+    }
+
     // Function to add ammo buttons to the HUD
-    public void AddAmmoButton(DiscardTypes type, UnityAction OnClick)
+    public void AddAmmoButton(DiscardTypes type)
     {
         // Clone the ammo button prefab
         Button ammoButtonClone = Instantiate(m_ammoButtomRef, m_ammoButtonsContainer);
-
-        // Add the OnClick event to the button
-        ammoButtonClone.onClick.AddListener(OnClick);
 
         // Add the button to the dictionary
         m_ammoButtons.Add(type, ammoButtonClone);

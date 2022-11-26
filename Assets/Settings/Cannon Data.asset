@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cda42a1be4204e41baa0fc2f3ff0c096, type: 3}
   m_Name: Cannon Data
   m_EditorClassIdentifier: 
-  <Health>k__BackingField: 100
   <Type>k__BackingField: 0
-  <MaxHealth>k__BackingField: 3
-  <Speed>k__BackingField: 5
-  <MaxSpeed>k__BackingField: 10
+  <MaxHealth>k__BackingField: 20
+  <Speed>k__BackingField: 0
+  <MaxSpeed>k__BackingField: 0
   <Damage>k__BackingField: 0
-  <InteractionRange>k__BackingField: 2
+  <InteractionRange>k__BackingField: 0
   <Body>k__BackingField: {fileID: 0}
