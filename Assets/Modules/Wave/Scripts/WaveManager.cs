@@ -118,8 +118,9 @@ namespace Modules.Wave
         /// </summary>
         private void SpawnBoss()
         {
-            var enemy = m_enemyPool.Get();
-            enemy.transform.position = GetRandomSpawnPoint();
+            var enemy = m_enemyPool.Get().transform;
+            enemy.position = GetRandomSpawnPoint();
+            enemy.localScale = Vector3.one * 2;
         }
 
         private Enemy.Enemy CreatePooleableEnemy()
