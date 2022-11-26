@@ -31,6 +31,6 @@ namespace Modules.Factory
         /// Get any random value
         /// </summary>
         /// <returns></returns>
-        public static DiscardTypes GetRandomType() => (DiscardTypes)Random.Range(0, 5);
+        public static DiscardTypes GetRandomType() => (DiscardTypes)Random.Range(1, 5);
     }
 }
