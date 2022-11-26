@@ -186,8 +186,10 @@ namespace Modules.Enemy
             sr_enemiesDistanceToPlayer.Add(this, float.MaxValue);
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
+            base.OnDisable();
+
             // Deregister slice update
             UpdateManager.Instance.DeregisterLateUpdate(this);
 
@@ -214,7 +216,7 @@ namespace Modules.Enemy
 
             return s_stringBuilder.ToString();
         }
-        
+
         protected override void OnDrawGizmos()
         {
             base.OnDrawGizmos();
