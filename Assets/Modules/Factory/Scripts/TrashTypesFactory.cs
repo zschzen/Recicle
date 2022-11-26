@@ -19,7 +19,7 @@ namespace Modules.Factory
         /// and <see cref="DiscardTypes.Glass"/>
         /// </summary>
         /// <returns></returns>
-        public static DiscardTypes GetRandomBaseType() => (DiscardTypes)Random.Range(0, 3);
+        public static DiscardTypes GetRandomBaseType() => (DiscardTypes)Random.Range(1, 3);
 
         /// <summary>
         /// Get random flag values, such as <see cref="DiscardTypes.Recyclable"/>, <see cref="DiscardTypes.NonRecyclable"/>
