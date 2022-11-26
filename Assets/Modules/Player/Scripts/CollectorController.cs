@@ -12,9 +12,9 @@ namespace Modules.Player
     public class CollectorController : ABaseCharacter<SOCharacterData>
     {
         [SerializeField] private CharacterController m_characterController;
+        private Collectable.Collectable m_collectable;
 
         private RaycastHit[] m_hits = new RaycastHit[1];
-        private Collectable.Collectable m_collectable;
 
         public override void Attack()
         {
