@@ -8,8 +8,6 @@ namespace Modules.Character
     public class SOCharacterData : ScriptableObject
     {
         [field: Header("Attributes")]
-        [field: SerializeField]
-        public ValueNotify<int> Health { get; internal set; } = new(3);
 
         [field: SerializeField] public DiscardTypes Type { get; private set; }
 
