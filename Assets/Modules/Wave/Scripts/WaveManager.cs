@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using DG.Tweening;
 using Enums;
 using Modules.Enemy;
 using Modules.UIScreen;
@@ -12,6 +11,8 @@ namespace Modules.Wave
 {
     public class WaveManager : MonoBehaviour
     {
+        // Static -------------------------------------------------------------------------------------------------------------------------------
+
         // Fields ----------------------------------------------------------------
         [SerializeField] private SOWaveData m_waveData;
         [SerializeField] private Transform[] m_spawnPoints;

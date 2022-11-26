@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using Enums;
@@ -12,6 +13,11 @@ namespace Modules.Enemy
     public class Enemy : ABaseCharacter<SOEnemyData>, IBatchLateUpdate
     {
         // Static, Readonly, Const -----------------------------------------------------------
+
+        /// <summary>
+        /// Function that returns a random collectable type
+        /// </summary>
+        public event Action<Enemy> OnDropCollectable;
 
         // Keep track of the closest enemy to the player
         public static readonly Dictionary<Enemy, float> sr_enemiesDistanceToPlayer = new();
@@ -121,6 +127,12 @@ namespace Modules.Enemy
 
                 gameObject.SetActive(false);
             }).SetId(GetInstanceID());
+
+            // Calculates the drop chance on death
+            if (Random.value > CharacterData.DropChance) return;
+
+            // Drop a collectable
+            OnDropCollectable?.Invoke(this);
         }
 
         public void BatchLateUpdate()

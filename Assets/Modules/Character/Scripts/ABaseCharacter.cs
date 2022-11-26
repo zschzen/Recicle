@@ -79,8 +79,9 @@ namespace Modules.Character
             Health.OnChange += OnDeath_Impl;
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
+            base.OnDisable();
             Health.OnChange -= OnDeath_Impl;
         }
 
@@ -147,12 +148,6 @@ namespace Modules.Character
         /// </summary>
         protected virtual void HandleSkin()
         {
-            return;
-            if (CharacterData == default) return;
-
-            // Spawn the character body
-            var body = Instantiate(CharacterData.Body, transform);
-            body.transform.localPosition = Vector3.zero;
         }
     }
 }

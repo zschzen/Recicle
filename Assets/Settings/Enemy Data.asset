@@ -12,8 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ec6afcc5e164c49b242ef78d97d4500, type: 3}
   m_Name: Enemy Data
   m_EditorClassIdentifier: 
-  <Health>k__BackingField:
-    m_value: 3
   <Type>k__BackingField: -7
   <MaxHealth>k__BackingField: 3
   <Speed>k__BackingField: 0.125
@@ -23,3 +21,5 @@ MonoBehaviour:
   <Body>k__BackingField: {fileID: 5334339924719463549, guid: bf34f0ff673a55e4ebd980183cbf1a3b,
     type: 3}
   <AttackRange>k__BackingField: 2
+  <DropTime>k__BackingField: 0
+  <DropChance>k__BackingField: 0.942

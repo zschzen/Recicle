@@ -19,8 +19,6 @@ namespace Modules.Collectable
         /// <param name="type"></param>
         public void SetType(DiscardTypes type)
         {
-            if (Type != DiscardTypes.None) return;
-
             Type = type;
 
             // Randomize the size of the collectable

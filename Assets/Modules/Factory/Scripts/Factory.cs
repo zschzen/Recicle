@@ -29,36 +29,36 @@ namespace Modules.Factory
             );
         }
 
-        private void OnPrefabLoaded(AsyncOperationHandle<GameObject> obj)
+        protected virtual void OnPrefabLoaded(AsyncOperationHandle<GameObject> obj)
         {
             m_ref = obj.Result.GetComponent<T>();
         }
 
-        protected T CreatePooleableObject()
+        protected virtual T CreatePooleableObject()
         {
-            // Clone the projectile prefab
-            var projectile = Instantiate(m_ref);
+            // Clone the obj prefab
+            var obj = Instantiate(m_ref);
 
-            // Set the projectile release method
-            projectile.OnRelease += () => m_pool.Release(projectile);
+            // Set the obj release method
+            obj.OnRelease += () => m_pool.Release(obj);
 
-            // Return the projectile
-            return projectile;
+            // Return the obj
+            return obj;
         }
 
-        protected void OnReturnedToPool(T projectile)
+        protected virtual void OnReturnedToPool(T projectile)
         {
             // Set the projectile to inactive
             projectile.gameObject.SetActive(false);
         }
 
-        protected void OnDestroyPoolObject(T projectile)
+        protected virtual void OnDestroyPoolObject(T projectile)
         {
             // Destroy the projectile
             Destroy(projectile.gameObject);
         }
 
-        protected void OnTakeFromPool(T projectile)
+        protected virtual void OnTakeFromPool(T projectile)
         {
             // Set the projectile to active
             projectile.gameObject.SetActive(true);
