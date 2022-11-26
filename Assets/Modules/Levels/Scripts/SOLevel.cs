@@ -1,4 +1,4 @@
-﻿using Modules.Wave;
+﻿using Modules.UIScreen;
 using UnityEngine;
 
 namespace Modules.Levels.Scripts
