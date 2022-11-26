@@ -84,8 +84,10 @@ namespace Modules.Player
         }
 
 #if UNITY_EDITOR
-        private void OnDrawGizmos()
+        protected override void OnDrawGizmos()
         {
+            base.OnDrawGizmos();
+
             var cannonPos = transform.position;
             var cannonForward = transform.forward;
 
@@ -127,7 +129,7 @@ namespace Modules.Player
         /// </summary>
         /// <param name="callback"></param>
         internal void OnFire(InputAction.CallbackContext callback) => Attack();
-        
+
         private Projectile.Projectile CreatePooleableProjectile()
         {
             // Clone the projectile prefab
