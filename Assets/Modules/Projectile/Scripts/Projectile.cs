@@ -2,7 +2,6 @@ using System;
 using DG.Tweening;
 using Enums;
 using UnityEngine;
-using UnityEngine.Pool;
 
 namespace Modules.Projectile
 {
@@ -13,7 +12,7 @@ namespace Modules.Projectile
 
         [field: SerializeField] public DiscardTypes Type { get; private set; }
         [field: SerializeField] public float Speed { get; private set; }
-        [field: SerializeField] public int Damage { get; private set; }
+        [field: SerializeField] public int Damage { get; private set; } = 1;
         [field: SerializeField] public float LifeTime { get; private set; }
 
         [SerializeField] private Rigidbody m_rigidbody;
