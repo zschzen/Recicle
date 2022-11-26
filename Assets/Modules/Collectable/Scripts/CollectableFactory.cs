@@ -1,14 +1,12 @@
-﻿using System;
-using Enums;
+﻿using Enums;
 using Modules.Factory;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Modules.Collectable
 {
     public class CollectableFactory : TrashTypesFactory<Collectable>
     {
-        public Collectable CreateRandomCollectable()
+        public Collectable CreateRandomTypeCollectable()
         {
             // get random type
             var type = GetRandomBaseType();
@@ -38,7 +36,7 @@ namespace Modules.Collectable
 
         public void Drop(Vector3 center, DiscardTypes type)
         {
-            var obj = GetObject();
+            var obj = CreateRandomTypeCollectable();
             obj.SetType(type);
 
             obj.transform.position = center + Vector3.up * 2;
