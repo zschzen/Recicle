@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Type Factory Data
   m_EditorClassIdentifier: 
   Types:
-  - <Color>k__BackingField: {r: 0.0141509175, g: 1, b: 0.076043606, a: 1}
+  - <Color>k__BackingField: {r: 1, g: 0.95184326, b: 0, a: 1}
     <Type>k__BackingField: 6
-  - <Color>k__BackingField: {r: 1, g: 0.042452812, b: 0.042452812, a: 1}
+  - <Color>k__BackingField: {r: 0.49056602, g: 0.27010745, b: 0, a: 1}
     <Type>k__BackingField: -7
+  - <Color>k__BackingField: {r: 1, g: 0.042452812, b: 0.042452812, a: 1}
+    <Type>k__BackingField: 0

@@ -1023,6 +1023,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Type>k__BackingField: -7
+  m_typeFactory: {fileID: 11400000, guid: c109354457019554e9a8fddc151a472d, type: 2}
 --- !u!1 &1417784505
 GameObject:
   m_ObjectHideFlags: 0
@@ -1185,6 +1186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Type>k__BackingField: 6
+  m_typeFactory: {fileID: 11400000, guid: c109354457019554e9a8fddc151a472d, type: 2}
 --- !u!1 &1640617363
 GameObject:
   m_ObjectHideFlags: 0

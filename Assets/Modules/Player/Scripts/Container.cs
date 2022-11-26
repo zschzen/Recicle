@@ -1,5 +1,6 @@
 ﻿using System;
 using Enums;
+using Modules.Factory;
 using UnityEngine;
 
 namespace Modules.Player
@@ -21,6 +22,15 @@ namespace Modules.Player
         // Fields ----------------------------------------------
 
         [field: SerializeField] public DiscardTypes Type { get; private set; } = DiscardTypes.None;
+        [SerializeField] private SOTypeFactory m_typeFactory;
+
+        // Unity methods ---------------------------------------
+
+        private void Awake()
+        {
+            // Sets color
+            GetComponent<Renderer>().material.color = m_typeFactory.GetByType(Type).Color;
+        }
 
         // Public Methods -------------------------------------------------------------
 
