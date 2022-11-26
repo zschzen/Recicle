@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -337,6 +337,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <CharacterData>k__BackingField: {fileID: 11400000, guid: 8f414c591963f1d4cbd5aaf5630f1154,
     type: 2}
+  <Health>k__BackingField:
+    m_value: 3
 --- !u!1 &504435197
 GameObject:
   m_ObjectHideFlags: 0
@@ -528,8 +530,9 @@ GameObject:
   - component: {fileID: 816288608}
   - component: {fileID: 816288610}
   - component: {fileID: 816288611}
-  m_Layer: 0
-  m_Name: Body
+  - component: {fileID: 816288612}
+  m_Layer: 8
+  m_Name: Collector
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -633,7 +636,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <CharacterData>k__BackingField: {fileID: 11400000, guid: 96f6ea1379eb1ad47a6c94c816413bd1,
     type: 2}
+  <Health>k__BackingField:
+    m_value: 3
   m_characterController: {fileID: 816288610}
+--- !u!54 &816288612
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816288606}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 4
+  m_CollisionDetection: 1
 --- !u!1 &977676160
 GameObject:
   m_ObjectHideFlags: 0
@@ -726,8 +747,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d587a18b6cea4b458c842a3255a5ce48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <CharacterData>k__BackingField: {fileID: 11400000, guid: 96f6ea1379eb1ad47a6c94c816413bd1,
-    type: 2}
   m_playerInput: {fileID: 1066967244}
   m_cannonController: {fileID: 452980523}
   m_bodyController: {fileID: 816288611}
@@ -1123,6 +1142,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: '[Graphy]'
       objectReference: {fileID: 0}
+    - target: {fileID: 11496292, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
+      propertyPath: m_advancedModuleState
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 22451668, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1326,7 +1349,7 @@ GameObject:
   - component: {fileID: 2002369854}
   - component: {fileID: 2002369853}
   - component: {fileID: 2002369857}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Collectable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1424,7 +1447,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39d8eaee0a8048d89a4eb286d7318a6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Size>k__BackingField: 1
+  <Size>k__BackingField: 3
   <Type>k__BackingField: 2
 --- !u!1 &2023816799
 GameObject:
@@ -1531,7 +1554,7 @@ GameObject:
   - component: {fileID: 2139217801}
   - component: {fileID: 2139217804}
   - component: {fileID: 2139217803}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Forward
   m_TagString: Untagged
   m_Icon: {fileID: 0}
