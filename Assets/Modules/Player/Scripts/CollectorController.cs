@@ -1,11 +1,14 @@
-﻿using Enums;
+﻿using System;
+using DG.Tweening;
+using Enums;
 using Modules.Character;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 namespace Modules.Player
 {
-    [RequireComponent(typeof(CharacterController))]
+    [RequireComponent(typeof(CharacterController), typeof(Rigidbody))]
     public class CollectorController : ABaseCharacter<SOCharacterData>
     {
         [SerializeField] private CharacterController m_characterController;
@@ -21,6 +24,8 @@ namespace Modules.Player
         {
             // Only continues if direction is not zero
             if (direction.Equals(default)) return;
+            if (DOTween.IsTweening(transform)) return;
+            if (!enabled) return;
 
             // Move the body to the direction
             var moveDirection = new Vector3(direction.x, 0, direction.y);
@@ -37,18 +42,11 @@ namespace Modules.Player
 
         protected override void OnDeath()
         {
+            _ = DOTween.Kill(transform);
+            _ = transform.DOScale(Vector3.zero, 0.5f).OnComplete(() => gameObject.SetActive(false));
         }
 
         // Unity Methods -----------------------------------------------------------------------------------------------------------------------------------------
-
-#if UNITY_EDITOR
-        private void OnDrawGizmos()
-        {
-            // Draw a sphere to represent interaction range onto body controller
-            Gizmos.color = Color.green;
-            Gizmos.DrawRay(transform.position, transform.forward * CharacterData.InteractionRange);
-        }
-#endif
 
         // Private Methods ----------------------------------------------------------------------------------------------
         /// <summary>
@@ -59,7 +57,7 @@ namespace Modules.Player
         internal void OnCollect(InputAction.CallbackContext callback)
         {
             // Only continues if its dead or a simple tap
-            if (bIsDead) return;
+            if (IsDead) return;
 
             // Tries to collect an item or dispose
             if (!m_collectable) TryAttachItem();
@@ -80,6 +78,9 @@ namespace Modules.Player
 
             // attach the item to the transform
             item.transform.SetParent(transform, true);
+
+            // animate the item to go to the back of collector
+            _ = item.transform.DOMove(transform.position + transform.forward * -0.5f, 0.5f);
         }
 
         /// <summary>
@@ -95,11 +96,17 @@ namespace Modules.Player
             // check if container type accepts the item
             if (!container.Type.HasFlag(m_collectable.Type)) return;
 
-            // Dispose the item to the container
-            container.Dispose(m_collectable);
+            // animate 
+            var seq = DOTween.Sequence();
+            seq.Append(m_collectable.transform.DOMove(container.transform.position, 0.5f));
+            seq.Join(m_collectable.transform.DOScale(Vector3.zero, 0.5f));
+            seq.AppendCallback(() =>
+            {
+                // Dispose the item to the container
+                container.Dispose(m_collectable);
 
-            // Destroy the item
-            Destroy(m_collectable.gameObject);
+                m_collectable = default;
+            });
         }
     }
 }
