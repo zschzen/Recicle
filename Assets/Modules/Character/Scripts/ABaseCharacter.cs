@@ -1,7 +1,7 @@
 ﻿using System;
 using Enums;
 using Modules.Factory;
-using Modules.UIScreen;
+using Modules.ValueNotify;
 using UnityEngine;
 
 namespace Modules.Character

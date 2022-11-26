@@ -91,9 +91,8 @@ namespace Modules.Player
             if (!TryCubeCast(LayerMask.GetMask("Container"), ref m_hits, out var hit)) return;
 
             // If the hit has an Container component
-            if (!hit.collider.TryGetComponent(out Container container)) return;
-
             // check if container type accepts the item
+            if (!hit.collider.TryGetComponent(out Container container)) return;
             if (!container.Type.HasFlag(m_collectable.Type)) return;
 
             // animate 

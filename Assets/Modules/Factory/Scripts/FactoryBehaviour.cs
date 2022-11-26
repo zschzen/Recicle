@@ -7,7 +7,7 @@ namespace Modules.Factory
     {
         public Action OnRelease { get; set; }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             // Release the projectile back to the pool
             OnRelease?.Invoke();

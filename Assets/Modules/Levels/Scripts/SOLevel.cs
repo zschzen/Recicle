@@ -1,7 +1,7 @@
-﻿using Modules.UIScreen;
+﻿using Modules.Wave;
 using UnityEngine;
 
-namespace Modules.Levels.Scripts
+namespace Modules.Levels
 {
     [CreateAssetMenu(fileName = "Level Data", menuName = "Gameplay/Level", order = 0)]
     public class SOLevel : ScriptableObject

@@ -12,18 +12,19 @@ namespace Modules.Projectile
         [field: SerializeField] public DiscardTypes Type { get; private set; }
         [field: SerializeField] public float Speed { get; private set; }
         [field: SerializeField] public int Damage { get; private set; } = 1;
-        [field: SerializeField] public float LifeTime { get; private set; }
 
         [SerializeField] private Rigidbody m_rigidbody;
-        [SerializeField] private Renderer m_renderer;
 
         // Public methods -----------------------------------------------------------------------------------------------
 
-        public void Launch(Vector3 direction, DiscardTypes type)
+        public void SetType(DiscardTypes type)
         {
+            if (Type != DiscardTypes.None) return;
+
             Type = type;
-            m_rigidbody.velocity = direction * Speed;
         }
+
+        public void Launch(Vector3 direction) => m_rigidbody.velocity = direction * Speed;
 
         // Unity Methods ----------------------------------------------------------------------
 
@@ -36,7 +37,12 @@ namespace Modules.Projectile
 
         private void OnDisable()
         {
+            base.OnDisable();
+
             _ = DOTween.Kill(this);
+
+            // Reset type
+            Type = DiscardTypes.None;
         }
 
         private void OnBecameInvisible() => gameObject.SetActive(false);
@@ -54,13 +60,6 @@ namespace Modules.Projectile
                 .SetEase(Ease.InBack);
 
             // TODO: Add particle effect
-        }
-
-        // Private Methods ---------------------------------------------------------------------
-
-        private Color GetColorByType(DiscardTypes type)
-        {
-            return Color.white;
         }
     }
 }

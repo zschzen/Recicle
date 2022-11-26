@@ -34,6 +34,10 @@ namespace Modules.Player
 
         // Public Methods -------------------------------------------------------------
 
-        public void Dispose(Collectable.Collectable collectable) => OnDiscard?.Invoke(Type, collectable.Size);
+        public void Dispose(Collectable.Collectable collectable)
+        {
+            if (!collectable) return;
+            OnDiscard?.Invoke(Type, collectable.Size);
+        }
     }
 }

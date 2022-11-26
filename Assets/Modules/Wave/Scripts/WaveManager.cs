@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using DG.Tweening;
 using Enums;
 using Modules.Enemy;
 using Modules.UIScreen;
+using Modules.ValueNotify;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.Pool;
 using Random = UnityEngine.Random;
 
-namespace Modules.UIScreen
+namespace Modules.Wave
 {
     public class WaveManager : MonoBehaviour
     {
@@ -42,9 +41,6 @@ namespace Modules.UIScreen
         private void Start()
         {
             m_currentWaveIndex.value = 0;
-
-            // Start wave
-            DOVirtual.DelayedCall(2F, StartWave);
 
             // Show wave screen
             LoadUI();

@@ -27,9 +27,7 @@ namespace Modules.Player
         {
             var data = m_projectileFactory.GetData();
             var color = data.GetByType(GetAmmoType.Invoke()).Color;
-            
-            Debug.Log($"Color: {color}");
-            
+
             GetComponent<Renderer>().material.color = color;
         }
 
@@ -40,12 +38,14 @@ namespace Modules.Player
 
             // Take ammo
             var ammo = GetAmmoCount();
+            var ammoType = GetAmmoType.Invoke();
 
             for (int i = 0; i < ammo; i++)
             {
                 _ = DOVirtual.DelayedCall(i * 0.125F, () =>
                 {
-                    var projectile = m_projectileFactory.GetObject();
+                    // Create projectile with a specific type then setup direction
+                    var projectile = m_projectileFactory.GetObject(ammoType);
                     SetupProjectile(projectile);
                 }).SetId(this);
             }
@@ -133,7 +133,7 @@ namespace Modules.Player
             projectile.transform.position = (forward * 2F) + trans.position;
 
             // Set projectile forwad to cannon forward
-            projectile.Launch(forward, GetAmmoType.Invoke());
+            projectile.Launch(forward);
 
             projectile.gameObject.SetActive(true);
         }

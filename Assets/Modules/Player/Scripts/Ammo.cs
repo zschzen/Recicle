@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Enums;
-using Modules.UIScreen;
+using Modules.ValueNotify;
+using UnityEngine;
 
 namespace Modules.Player
 {
@@ -21,7 +22,7 @@ namespace Modules.Player
             m_clips = new Dictionary<DiscardTypes, QueueValueNotify<int>>
             {
                 { DiscardTypes.Recyclable, new QueueValueNotify<int>() },
-                { DiscardTypes.Organic, new QueueValueNotify<int>() }
+                { DiscardTypes.NonRecyclable, new QueueValueNotify<int>() }
             };
         }
 
@@ -51,7 +52,10 @@ namespace Modules.Player
         /// </summary>
         /// <param name="type"></param>
         /// <param name="amount"></param>
-        public void AddAmmo(DiscardTypes type, int amount) => m_clips[type].Enqueue(amount);
+        public void AddAmmo(DiscardTypes type, int amount)
+        {
+            m_clips[type].Enqueue(amount);
+        }
 
         /// <summary>
         /// Get the current ammo type.

@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 using Random = System.Random;
 
-namespace Modules.UIScreen
+namespace Modules.ValueNotify
 {
     [Serializable]
     public class QueueValueNotify<T> : IEnumerable

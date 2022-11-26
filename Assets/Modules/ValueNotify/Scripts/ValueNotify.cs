@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-namespace Modules.UIScreen
+namespace Modules.ValueNotify
 {
     /// <summary>
     /// Class responsible for storing the data and notifying the when the data changes.

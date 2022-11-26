@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Modules.UIScreen
+namespace Modules.Wave
 {
     [CreateAssetMenu(fileName = "Wave Data", menuName = "Wave/Data", order = 0)]
     public class SOWaveData : ScriptableObject
