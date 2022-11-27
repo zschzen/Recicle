@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <WaveCount>k__BackingField: 5
   <EnemyCount>k__BackingField: 5
-  <SpawnDelay>k__BackingField: 2
-  <WaveDelay>k__BackingField: 2
+  <SpawnDelay>k__BackingField: 3
+  <WaveDelay>k__BackingField: 25

@@ -38,9 +38,18 @@ namespace Modules.Collectable
         {
             var obj = CreateRandomTypeCollectable();
             obj.SetType(type);
+            SetColor(obj);
 
-            obj.transform.position = center + Vector3.up * 2;
+            var pos = center + Random.insideUnitSphere * 2;
+            pos.y = 0;
+            obj.transform.position = pos;
+
             obj.gameObject.SetActive(true);
+        }
+
+        protected override void OnReturnedToPool(Collectable projectile)
+        {
+            base.OnReturnedToPool(projectile);
         }
     }
 }

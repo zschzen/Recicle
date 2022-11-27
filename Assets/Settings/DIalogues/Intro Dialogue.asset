@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e625b22c57ac427a8c0be1e255312023, type: 3}
+  m_Name: Intro Dialogue
+  m_EditorClassIdentifier: 
+  <FreezeTime>k__BackingField: 0
+  <Dialogues>k__BackingField:
+  - <Title>k__BackingField: Intro
+    <Content>k__BackingField: "Vida longa e pr\xF3spera, recruta.\nFinalmente acordou,
+      ein?\nTemos de limpar os arredores da cidade e reciclar todos!"
+    <BackgroundColor>k__BackingField: {r: 0, g: 0, b: 0, a: 0}
+  - <Title>k__BackingField: 
+    <Content>k__BackingField: "Voc\xEA controlar\xE1 duas unidades remotas:\nUm canh\xE3o
+      de proj\xE9til e um android coletor.\nFique ligado para n\xE3o ser engolido!"
+    <BackgroundColor>k__BackingField: {r: 0, g: 0, b: 0, a: 0}
+  - <Title>k__BackingField: Tutorial
+    <Content>k__BackingField: "Use o anal\xF3gico esquerdo para rotacionar o canh\xE3o.\nAlinhe
+      sua mira para lan\xE7ar o proj\xE9til nos monstros certo!\nS\xF3 podemos reciclar
+      o monstro com o proj\xE9til oposto.\nRecicl\xE1vel \xE9 vulner\xE1vel ao n\xE3o
+      recic\xE1vel!"
+    <BackgroundColor>k__BackingField: {r: 0, g: 0, b: 0, a: 0}
+  - <Title>k__BackingField: 
+    <Content>k__BackingField: "D\xEA-lhe um tapa para atirar, quando estiver confiante."
+    <BackgroundColor>k__BackingField: {r: 0, g: 0, b: 0, a: 0}
+  - <Title>k__BackingField: 
+    <Content>k__BackingField: "Use o anal\xF3gico direito para controlar o catador.
+      Seja r\xE1pido e perspicaz para deixar a cidade limpa, destinando aos containers
+      de igual tipo."
+    <BackgroundColor>k__BackingField: {r: 0, g: 0, b: 0, a: 0}
+  - <Title>k__BackingField: 
+    <Content>k__BackingField: "O mesmo tapa realiza a\xE7\xF5es, como carregar o
+      lixo espalhado e despejar no container apropriado!"
+    <BackgroundColor>k__BackingField: {r: 0, g: 0, b: 0, a: 0}
+  - <Title>k__BackingField: 
+    <Content>k__BackingField: "Selecione o tipo desejado de proj\xE9til com os bot\xF5es
+      inferiores. Eles indicam a carga do tipo e os proj\xE9teis restantes."
+    <BackgroundColor>k__BackingField: {r: 0, g: 0, b: 0, a: 0}

@@ -21,8 +21,8 @@ namespace Modules.Player
         {
             m_clips = new Dictionary<DiscardTypes, QueueValueNotify<int>>
             {
-                { DiscardTypes.Recyclable, new QueueValueNotify<int>() },
-                { DiscardTypes.NonRecyclable, new QueueValueNotify<int>() }
+                { DiscardTypes.Recyclable, new QueueValueNotify<int>(new [] {3, 9}) },
+                { DiscardTypes.NonRecyclable, new QueueValueNotify<int>(new [] {3, 9}) }
             };
         }
 

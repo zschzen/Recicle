@@ -1,25 +1,35 @@
-﻿using System;
-using System.Collections;
-using System.Reflection;
-using DG.DOTweenEditor;
-using DG.Tweening;
+﻿using DG.Tweening;
+using Modules.BucketUpdate.Script;
 using Modules.Collectable;
-using Modules.Dialogue;
+using Modules.Enemy;
 using Modules.Wave;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Modules.GameManager
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : MonoBehaviour, IBatchFixedUpdate
     {
-        [SerializeField] private float m_gameDelay = 3f;
-
         [SerializeField] private WaveManager m_waveManager;
         [SerializeField] private CollectableFactory m_collectableFactory;
+        [SerializeField] private EnemyFactory m_enemyFactory;
 
-        [SerializeField] private Dialogue.Dialogue m_introDialogue, m_gameoverDialogue, m_winDialogue;
+        [SerializeField] private Dialogue.Dialogue m_introDialogue, m_winDialogue;
         [SerializeField] private float m_introDialogueDelay = .5f;
+
+        private bool m_isGameStarted;
+
+        // Unity methods ---------------------------------------------------------
+
+        private void OnEnable()
+        {
+            UpdateManager.Instance.RegisterFixedUpdateSliced(this, 0);
+        }
+
+        private void OnDisable()
+        {
+            UpdateManager.Instance.DeregisterFixedUpdate(this);
+        }
 
         private void Start()
         {
@@ -28,16 +38,23 @@ namespace Modules.GameManager
             m_introDialogue.OnDialogueEnd.AddListener(StartGame);
         }
 
-        // Start coroutine
-        private void StartGame()
+        public void BatchFixedUpdate()
         {
-            StartCoroutine(GameStartRoutine());
+            if (!m_isGameStarted) return;
+
+            if (!m_waveManager.bIsWaveFinished) return;
+            if (!m_waveManager.bEveryOneIsDead) return;
+
+            m_isGameStarted = false;
+            m_winDialogue.Show(true);
         }
 
-        private IEnumerator GameStartRoutine()
+        // Private methods ------------------------------------------------------
+        
+        private void StartGame()
         {
             // Spawn random collectable
-            var amount = Random.Range(10, 20);
+            var amount = Random.Range(10, 15);
 
             for (var i = 0; i < amount; i++)
             {
@@ -47,11 +64,11 @@ namespace Modules.GameManager
                 var collectable = m_collectableFactory.CreateRandomTypeCollectable();
                 collectable.transform.position = new Vector3(Random.Range(-5, 5), 0, Random.Range(-5, 5));
             }
-            
-            yield return new WaitForSeconds(m_gameDelay);
 
             // Start wave
             m_waveManager.StartWave();
+
+            m_isGameStarted = true;
         }
     }
 }

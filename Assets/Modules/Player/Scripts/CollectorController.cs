@@ -3,6 +3,7 @@ using DG.Tweening;
 using Enums;
 using Modules.Character;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
 
@@ -12,6 +13,8 @@ namespace Modules.Player
     public class CollectorController : ABaseCharacter<SOCharacterData>
     {
         [SerializeField] private CharacterController m_characterController;
+        [SerializeField] private UnityEvent m_onDeath = new UnityEvent();
+
         private Collectable.Collectable m_collectable;
 
         private RaycastHit[] m_hits = new RaycastHit[1];
@@ -42,8 +45,9 @@ namespace Modules.Player
 
         protected override void OnDeath()
         {
+            m_onDeath.Invoke();
             _ = DOTween.Kill(transform);
-            _ = transform.DOScale(Vector3.zero, 0.5f).OnComplete(() => gameObject.SetActive(false));
+            _ = transform.DOScale(Vector3.zero, 0.5f).SetUpdate(true).OnComplete(() => gameObject.SetActive(false));
         }
 
         // Unity Methods -----------------------------------------------------------------------------------------------------------------------------------------
@@ -101,9 +105,12 @@ namespace Modules.Player
             seq.Join(m_collectable.transform.DOScale(Vector3.zero, 0.5f));
             seq.AppendCallback(() =>
             {
+                if (!m_collectable) return;
+
                 // Dispose the item to the container
                 container.Dispose(m_collectable);
 
+                m_collectable.transform.SetParent(null, true);
                 m_collectable = default;
             });
         }

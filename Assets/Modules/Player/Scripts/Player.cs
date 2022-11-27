@@ -12,6 +12,8 @@ namespace Modules.Player
         [SerializeField] private CannonController m_cannonController;
         [SerializeField] private CollectorController m_bodyController;
 
+        [SerializeField] private Dialogue.Dialogue m_gameoverDialogue;
+        
         private Ammo m_ammo = new();
         private UIScreenPlayerHUD m_HUD;
 

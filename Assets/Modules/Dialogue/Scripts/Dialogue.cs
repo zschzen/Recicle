@@ -21,6 +21,7 @@ namespace Modules.Dialogue
         [SerializeField] private TMP_Text m_title;
         [SerializeField] private TMP_Text m_content;
         [SerializeField] private Button m_nextButton;
+        [SerializeField] private TMP_Text m_nextButtonText;
 
         private int m_currentDialogueIndex = 0;
         private SODialogue.DialogueData m_currentDialogue;
@@ -68,8 +69,13 @@ namespace Modules.Dialogue
         private void SetCurrentDialogueData()
         {
             if (DialogueData == null) return;
-            if (!bHasNextDialogue) return;
+            if (!bHasNextDialogue)
+            {
+                m_nextButtonText.text = "Finalizar";
+                return;
+            }
 
+            m_nextButtonText.text = "Continuar";
             var current = DialogueData.Dialogues[m_currentDialogueIndex];
 
             m_currentDialogue = DialogueData.Dialogues[m_currentDialogueIndex];

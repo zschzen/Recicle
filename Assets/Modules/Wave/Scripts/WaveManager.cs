@@ -13,6 +13,13 @@ namespace Modules.Wave
     {
         // Static -------------------------------------------------------------------------------------------------------------------------------
 
+        // Return true if no wave left && boss is dead
+
+        // is everyone dead when boss is not null and is alive
+        public bool bEveryOneIsDead => m_boss != null && m_boss.Health <= 0;
+
+        public bool bIsWaveFinished =>m_currentWaveIndex >= m_waveData.WaveCount;
+
         // Fields ----------------------------------------------------------------
         [SerializeField] private SOWaveData m_waveData;
         [SerializeField] private Transform[] m_spawnPoints;
@@ -24,11 +31,13 @@ namespace Modules.Wave
         private Coroutine m_waveCoroutine;
         private Coroutine m_spawnCoroutine;
         private UIScreenWave m_waveScreen;
+        private Enemy.Enemy m_boss;
 
         // Public Methods -------------------------------------------------------
 
         public void StartWave()
         {
+            enabled = true;
             if (m_waveCoroutine != null) StopCoroutine(m_waveCoroutine);
 
             m_currentWaveIndex.value = 0;
@@ -48,6 +57,11 @@ namespace Modules.Wave
         }
 
         // Private Methods ------------------------------------------------------
+
+        private void Awake()
+        {
+            enabled = false;
+        }
 
         private void LoadUI()
         {
@@ -103,7 +117,7 @@ namespace Modules.Wave
                 // Increase wave index while it's less than wave count
             } while (++m_currentWaveIndex.value < m_waveData.WaveCount);
 
-            SpawnBoss();
+            m_boss = SpawnBoss();
         }
 
         private IEnumerator WaveCountdown()
@@ -150,11 +164,12 @@ namespace Modules.Wave
         /// <summary>
         /// Set enemy's boss
         /// </summary>
-        private void SpawnBoss()
+        private Enemy.Enemy SpawnBoss()
         {
             var enemy = m_enemyFactory.GetObject().transform;
             enemy.position = GetRandomSpawnPoint();
             enemy.localScale = Vector3.one * 2;
+            return enemy.GetComponent<Enemy.Enemy>();
         }
 
         private void OnTimeToNextWaveChanged() => m_waveScreen.SetTimer(m_timeToNextWave.value);

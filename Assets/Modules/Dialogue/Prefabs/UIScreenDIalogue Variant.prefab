@@ -755,6 +755,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4653188380486927179, guid: e5dbe6b3a70e65941b73369f25a947df,
+        type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653188380486927179, guid: e5dbe6b3a70e65941b73369f25a947df,
+        type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653188380486927179, guid: e5dbe6b3a70e65941b73369f25a947df,
+        type: 3}
+      propertyPath: m_BlocksRaycasts
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4653188380877674642, guid: e5dbe6b3a70e65941b73369f25a947df,
         type: 3}
       propertyPath: m_Name
@@ -908,13 +923,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0df8de7dbc5f2b946ad84b5305ed0058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <IsShow>k__BackingField: 1
+  <IsShow>k__BackingField: 0
   <Name>k__BackingField: Screen
+  <FreezeTimer>k__BackingField: 0
   m_CanvasGroup: {fileID: 265199849433347280}
   <DialogueData>k__BackingField: {fileID: 11400000, guid: aaa908f1b269e774dbf0b6342ffd389f,
     type: 2}
-  m_showOnStart: 1
+  <OnDialogueEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  m_showOnStart: 0
   m_background: {fileID: 2993795313453619838}
   m_title: {fileID: 3328322151948011783}
   m_content: {fileID: 4010532658540498325}
   m_nextButton: {fileID: 5348843763416847610}
+  m_nextButtonText: {fileID: 4372139518209561410}

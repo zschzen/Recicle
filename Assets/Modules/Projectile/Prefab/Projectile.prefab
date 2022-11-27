@@ -129,6 +129,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Type>k__BackingField: 0
   <Speed>k__BackingField: 5
-  <Damage>k__BackingField: 1
-  <LifeTime>k__BackingField: 15
+  <Damage>k__BackingField: 10
   m_rigidbody: {fileID: 7270237198670279139}

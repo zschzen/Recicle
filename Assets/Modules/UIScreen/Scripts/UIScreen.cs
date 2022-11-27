@@ -11,18 +11,20 @@ namespace Modules.UIScreen
 
         [field: SerializeField] public bool IsShow { get; private set; } = true;
         [field: SerializeField] public string Name { get; private set; } = "Screen";
+        [field: SerializeField] public bool FreezeTimer { get; private set; } = false;
 
         // Fields ---------------------------------------
 
         [SerializeField] private CanvasGroup m_CanvasGroup;
 
         // Public Methods ----------------------------------------------------------------------------------------------
+        public void Show() => Show(FreezeTimer);
 
         /// <summary>
         /// Show the screen
         /// </summary>
         /// <param name="freeze">Should the screen freeze the game?</param>
-        public virtual Tween Show(bool freeze = false, float duration = 0.5F)
+        public virtual Tween Show(bool freeze = false)
         {
             if (IsShow) return default;
             IsShow = true;
@@ -35,7 +37,7 @@ namespace Modules.UIScreen
 
             // Fade in
             _ = DOTween.Kill(m_CanvasGroup);
-            return m_CanvasGroup.DOFade(1, duration).OnComplete(() => SetCanvasInteractable(true)).SetUpdate(true);
+            return m_CanvasGroup.DOFade(1, .5F).OnComplete(() => SetCanvasInteractable(true)).SetUpdate(true);
         }
 
         /// <summary>

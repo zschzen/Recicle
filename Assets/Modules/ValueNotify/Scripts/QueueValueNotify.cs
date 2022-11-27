@@ -22,6 +22,11 @@ namespace Modules.ValueNotify
             _value = new Queue<T>();
         }
 
+        public QueueValueNotify(IEnumerable<T> collection)
+        {
+            _value = new Queue<T>(collection);
+        }
+
         public Queue<T> value
         {
             protected get => _value;

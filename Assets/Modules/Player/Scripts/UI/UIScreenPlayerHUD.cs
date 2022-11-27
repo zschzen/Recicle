@@ -22,11 +22,6 @@ public class UIScreenPlayerHUD : UIScreen
 
     // Public methods -----------------------------------------------------------------------------------------------
 
-    public override Tween Show(bool freeze = false, float duration = 0.5F)
-    {
-        return base.Show(freeze, duration);
-    }
-
     public override Tween Hide(bool freeze = false, float duration = 0.5F)
     {
         return base.Hide(freeze, duration);

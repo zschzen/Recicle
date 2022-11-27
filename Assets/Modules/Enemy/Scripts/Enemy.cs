@@ -60,7 +60,7 @@ namespace Modules.Enemy
             // Organic only takes damage from recyclable and vice versa
             switch (type)
             {
-                case DiscardTypes.Organic when DiscardTypes.Organic.HasFlag(this.Type):
+                case DiscardTypes.NonRecyclable when DiscardTypes.NonRecyclable.HasFlag(this.Type):
                 case DiscardTypes.Recyclable when DiscardTypes.Recyclable.HasFlag(this.Type):
                     return;
             }

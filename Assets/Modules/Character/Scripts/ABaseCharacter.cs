@@ -79,12 +79,6 @@ namespace Modules.Character
             Health.OnChange += OnDeath_Impl;
         }
 
-        protected override void OnDisable()
-        {
-            base.OnDisable();
-            Health.OnChange -= OnDeath_Impl;
-        }
-
         private void OnDeath_Impl()
         {
             if (!IsDead) return;

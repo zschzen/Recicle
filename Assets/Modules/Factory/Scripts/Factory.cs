@@ -7,22 +7,25 @@ namespace Modules.Factory
 {
     public abstract class Factory<T, S> : MonoBehaviour where T : FactoryBehaviour where S : SOTypeFactory
     {
+        
+        // Properties ------------------------------------------
+        public IObjectPool<T> Pool { get; protected set; }
+        
         // Addressables reference to the prefab
-        [SerializeField] private AssetReference m_prefabReference;
-        [SerializeField] private S m_factorySettings;
+        [SerializeField] protected AssetReference m_prefabReference;
+        [SerializeField] protected S m_factorySettings;
 
-        private T m_ref;
-        private IObjectPool<T> m_pool;
+        protected T m_ref;
 
         public virtual S GetData() => m_factorySettings;
-        public virtual T GetObject() => m_pool.Get();
+        public virtual T GetObject() => Pool.Get();
 
         protected virtual void Awake()
         {
             m_prefabReference.LoadAssetAsync<GameObject>().Completed += OnPrefabLoaded;
 
             // Create a pool of projectiles
-            m_pool = new ObjectPool<T>(
+            Pool = new ObjectPool<T>(
                 CreatePooleableObject, OnTakeFromPool,
                 OnReturnedToPool, OnDestroyPoolObject,
                 false, 10, 20
@@ -40,7 +43,7 @@ namespace Modules.Factory
             var obj = Instantiate(m_ref);
 
             // Set the obj release method
-            obj.OnRelease += () => m_pool.Release(obj);
+            obj.OnRelease += () => Pool.Release(obj);
 
             // Return the obj
             return obj;

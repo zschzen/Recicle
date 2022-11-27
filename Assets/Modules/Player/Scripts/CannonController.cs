@@ -6,6 +6,7 @@ using Modules.Factory;
 using Modules.Projectile;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Pool;
 
@@ -20,6 +21,7 @@ namespace Modules.Player
         // Fields ------------------------------------------
 
         [SerializeField] private ProjectileFactory m_projectileFactory;
+        [SerializeField] private UnityEvent m_onDeath;
 
         // Public Methods ----------------------------------------------------
 
@@ -73,6 +75,8 @@ namespace Modules.Player
 
         protected override void OnDeath()
         {
+            enabled = false;
+            m_onDeath.Invoke();
         }
 
         // Unity Methods -----------------------------------------------------

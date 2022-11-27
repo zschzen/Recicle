@@ -31,10 +31,11 @@ namespace Modules.Collectable
 
         private void Awake() => Size = 0;
 
+        protected void OnEnable() => transform.SetParent(default);
+
         protected override void OnDisable()
         {
             // Reset type
-            transform.SetParent(default);
             Type = DiscardTypes.None;
             Size = 0;
 

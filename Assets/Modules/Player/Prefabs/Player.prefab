@@ -759,5 +759,5 @@ MonoBehaviour:
   <CharacterData>k__BackingField: {fileID: 11400000, guid: 8f414c591963f1d4cbd5aaf5630f1154,
     type: 2}
   <Health>k__BackingField:
-    m_value: 3
+    m_value: 20
   m_projectileFactory: {fileID: 0}

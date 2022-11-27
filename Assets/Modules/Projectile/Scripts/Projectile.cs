@@ -50,6 +50,7 @@ namespace Modules.Projectile
         {
             if (!other.gameObject.CompareTag("Enemy")) return;
             if (!other.TryGetComponent(out Enemy.Enemy enemy)) return;
+            if (enemy.IsDead) return;
 
             enemy.TakeDamage(Damage, Type);
 
